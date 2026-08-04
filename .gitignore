@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+node_modules
+.turbo
+dist
+build
+.next
+.expo
+*.log
+.DS_Store
+ios/Pods
+ios/*.xcworkspace
+android
+.vercel
+supabase/.temp
