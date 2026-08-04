@@ -3,17 +3,23 @@
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {
+    "@livekit/components-react": "^2.9.23",
+    "@livekit/react-native": "^2.12.0",
+    "@livekit/react-native-webrtc": "^144.1.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@supabase/supabase-js": "^2.45.4",
     "@yume/room-schema": "workspace:*",
     "@yume/supabase-types": "workspace:*",
     "expo": "~57.0.9",
     "expo-status-bar": "~57.0.1",
+    "livekit-client": "^2.21.0",
     "react": "19.2.3",
     "react-native": "0.86.2",
     "react-native-url-polyfill": "^2.0.0"
   },
   "devDependencies": {
+    "@config-plugins/react-native-webrtc": "^15.0.1",
+    "@livekit/react-native-expo-plugin": "^1.0.2",
     "@types/react": "~19.2.2",
     "typescript": "~6.0.3"
   },

@@ -75,3 +75,28 @@ export async function revokeInviteAction(inviteId: string, roomId: string): Prom
 
   revalidatePath(`/room/${roomId}`);
 }
+
+export async function updateRoomAudioModeAction(
+  roomId: string,
+  audioMode: "spatial" | "room_wide"
+): Promise<{ error?: string }> {
+  await requireUser();
+  const supabase = await createClient();
+  const { error } = await supabase.from("rooms").update({ audio_mode: audioMode }).eq("id", roomId);
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/room/${roomId}`);
+  return {};
+}
+
+export async function updateOwnStatusAction(
+  status: "online" | "away" | "busy" | "studying" | "offline"
+): Promise<{ error?: string }> {
+  const user = await requireUser();
+  const supabase = await createClient();
+  const { error } = await supabase.from("profiles").update({ status }).eq("id", user.id);
+
+  if (error) return { error: error.message };
+  return {};
+}

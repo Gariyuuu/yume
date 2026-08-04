@@ -6,9 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Group, Layer, Rect, Stage, Text } from "react-konva";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
-
-const ROOM_WIDTH = 1200;
-const ROOM_HEIGHT = 800;
+import { ROOM_HEIGHT, ROOM_WIDTH } from "./room-dimensions";
 
 const OBJECT_COLORS: Partial<Record<RoomObject["type"], string>> = {
   sticky_note: "#fde68a",
@@ -22,12 +20,16 @@ export function RoomCanvas({
   roomId,
   initialObjects,
   currentProfileId,
-  canManageAll
+  canManageAll,
+  overlay
 }: {
   roomId: string;
   initialObjects: RoomObject[];
   currentProfileId: string;
   canManageAll: boolean;
+  /** Rendered absolutely-positioned inside the same container as the Stage,
+   *  at the same (0,0) origin — see components/call/participant-bubbles-layer.tsx. */
+  overlay?: React.ReactNode;
 }) {
   const supabase = useMemo(() => createClient(), []);
   const [objects, setObjects] = useState<Record<string, RoomObject>>(() =>
@@ -134,7 +136,7 @@ export function RoomCanvas({
         </Button>
       </div>
 
-      <div className="w-full overflow-auto rounded-card border bg-room-bg">
+      <div className="relative w-full overflow-auto rounded-card border bg-room-bg">
         <Stage
           width={ROOM_WIDTH}
           height={ROOM_HEIGHT}
@@ -182,6 +184,7 @@ export function RoomCanvas({
             })}
           </Layer>
         </Stage>
+        {overlay}
       </div>
     </div>
   );

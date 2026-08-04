@@ -3,3 +3,4 @@ export * from "./profile";
 export * from "./room";
 export * from "./room-object";
 export * from "./invite";
+export * from "./presence";

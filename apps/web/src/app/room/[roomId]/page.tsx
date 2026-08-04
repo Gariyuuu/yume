@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { RoomCanvasLoader } from "@/components/room-canvas/room-canvas-loader";
+import { RoomStage } from "@/components/room-stage";
 import { requireProfile } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { InviteDialog } from "./invite-dialog";
@@ -50,11 +50,16 @@ export default async function RoomPage({ params }: PageProps<"/room/[roomId]">) 
       </header>
 
       <main className="flex-1 p-6">
-        <RoomCanvasLoader
+        <RoomStage
           roomId={room.id}
           initialObjects={(objects ?? []) as RoomObject[]}
-          currentProfileId={profile.id}
+          profile={{
+            id: profile.id,
+            display_name: profile.display_name,
+            avatar_url: profile.avatar_url
+          }}
           canManageAll={canManageAll}
+          audioMode={room.audio_mode}
         />
       </main>
     </div>

@@ -24,6 +24,7 @@ export function RoomCanvasLoader(props: {
   initialObjects: RoomObject[];
   currentProfileId: string;
   canManageAll: boolean;
+  overlay?: React.ReactNode;
 }) {
   return <RoomCanvas {...props} />;
 }
