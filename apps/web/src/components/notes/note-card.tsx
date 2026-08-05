@@ -62,7 +62,7 @@ export function NoteCard({
           ) : null}
         </div>
         {isOwnerOrMod ? (
-          <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onDelete}>
+          <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onDelete} title="Delete note">
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
         ) : null}

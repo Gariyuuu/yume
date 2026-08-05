@@ -95,18 +95,24 @@ export function TimerCard({
       {canControl ? (
         <div className="flex items-center gap-1">
           {timer.status === "running" ? (
-            <Button size="icon" variant="outline" onClick={onPause}>
+            <Button size="icon" variant="outline" onClick={onPause} aria-label="Pause timer">
               <Pause className="h-4 w-4" />
             </Button>
           ) : (
-            <Button size="icon" variant="outline" onClick={onStart} disabled={timer.type === "event_countdown"}>
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={onStart}
+              disabled={timer.type === "event_countdown"}
+              aria-label="Start timer"
+            >
               <Play className="h-4 w-4" />
             </Button>
           )}
-          <Button size="icon" variant="outline" onClick={onReset}>
+          <Button size="icon" variant="outline" onClick={onReset} aria-label="Reset timer">
             <RotateCcw className="h-4 w-4" />
           </Button>
-          <Button size="icon" variant="ghost" onClick={onDelete}>
+          <Button size="icon" variant="ghost" onClick={onDelete} aria-label="Delete timer">
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>

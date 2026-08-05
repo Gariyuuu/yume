@@ -1,27 +1,40 @@
 import type { TrackReference } from "@livekit/components-react";
 import { VideoTrack } from "@livekit/react-native";
 import type { Participant } from "livekit-client";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export function ParticipantTile({
   participant,
   cameraTrackRef,
   speaking,
-  muted
+  muted,
+  isSelf,
+  onLongPress
 }: {
   participant: Participant;
   cameraTrackRef: TrackReference | undefined;
   speaking: boolean;
   muted: boolean;
+  isSelf: boolean;
+  onLongPress?: () => void;
 }) {
   const initials = (participant.name || participant.identity).slice(0, 2).toUpperCase();
 
   return (
-    <View style={[styles.tile, speaking ? styles.speaking : null]}>
+    <Pressable
+      style={styles.tile}
+      onLongPress={isSelf ? undefined : onLongPress}
+      delayLongPress={400}
+      accessibilityLabel={`${participant.name || participant.identity}${muted ? ", muted" : ""}${speaking ? ", speaking" : ""}`}
+    >
       {cameraTrackRef ? (
-        <VideoTrack trackRef={cameraTrackRef} style={styles.video} objectFit="cover" />
+        <VideoTrack
+          trackRef={cameraTrackRef}
+          style={speaking ? { ...styles.video, ...styles.speakingRing } : styles.video}
+          objectFit="cover"
+        />
       ) : (
-        <View style={styles.avatar}>
+        <View style={[styles.avatar, speaking ? styles.speakingRing : null]}>
           <Text style={styles.avatarText}>{initials}</Text>
         </View>
       )}
@@ -29,7 +42,7 @@ export function ParticipantTile({
         {muted ? "🔇 " : ""}
         {participant.name || participant.identity}
       </Text>
-    </View>
+    </Pressable>
   );
 }
 
@@ -41,8 +54,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 4
   },
-  speaking: {
-    opacity: 1
+  speakingRing: {
+    borderWidth: 3,
+    borderColor: "#9f22cd"
   },
   video: {
     width: SIZE,

@@ -78,7 +78,13 @@ function InCallControls() {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button size="icon" variant={mic.enabled ? "default" : "outline"} onClick={() => mic.toggle()}>
+      <Button
+        size="icon"
+        variant={mic.enabled ? "default" : "outline"}
+        onClick={() => mic.toggle()}
+        aria-label={mic.enabled ? "Mute microphone" : "Unmute microphone"}
+        aria-pressed={mic.enabled}
+      >
         {mic.enabled ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
       </Button>
       <DeviceSelect kind="audioinput" />
@@ -88,6 +94,8 @@ function InCallControls() {
         variant={camera.enabled || effectsLive ? "default" : "outline"}
         onClick={() => camera.toggle()}
         disabled={effectsLive}
+        aria-label={camera.enabled ? "Turn off camera" : "Turn on camera"}
+        aria-pressed={camera.enabled || effectsLive}
       >
         {camera.enabled || effectsLive ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
       </Button>
@@ -110,6 +118,8 @@ function InCallControls() {
         variant={screenShare.enabled ? "default" : "outline"}
         onClick={() => screenShare.toggle()}
         title="Share your screen"
+        aria-label={screenShare.enabled ? "Stop sharing your screen" : "Share your screen"}
+        aria-pressed={screenShare.enabled}
       >
         {screenShare.enabled ? <Monitor className="h-4 w-4" /> : <MonitorOff className="h-4 w-4" />}
       </Button>

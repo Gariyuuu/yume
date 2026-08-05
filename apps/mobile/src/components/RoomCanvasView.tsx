@@ -1,4 +1,4 @@
-import { Canvas, Group } from "@shopify/react-native-skia";
+import { Canvas, Group, useCanvasRef } from "@shopify/react-native-skia";
 import type { RoomAsset, RoomObject, RoomObjectType } from "@yume/room-schema";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -31,13 +31,21 @@ const MOVE_CANCEL_THRESHOLD = 6;
 export function RoomCanvasView({
   roomId,
   currentProfileId,
-  canManageAll
+  canManageAll,
+  onCanvasRef
 }: {
   roomId: string;
   currentProfileId: string;
   canManageAll: boolean;
+  onCanvasRef?: (ref: ReturnType<typeof useCanvasRef>) => void;
 }) {
   const { objects, setObjects } = useRoomObjects(roomId);
+  const canvasRef = useCanvasRef();
+  // `canvasRef` is a stable ref object across renders, so handing it up
+  // once on mount is enough — no need to re-run this on every render.
+  useEffect(() => {
+    onCanvasRef?.(canvasRef);
+  }, [onCanvasRef, canvasRef]);
   const [assets, setAssets] = useState<RoomAsset[]>([]);
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
@@ -197,7 +205,7 @@ export function RoomCanvasView({
         style={{ width: displayWidth, height: displayHeight, borderRadius: 16, overflow: "hidden" }}
         {...panResponder.panHandlers}
       >
-        <Canvas style={{ width: displayWidth, height: displayHeight, backgroundColor: "#fff7f0" }}>
+        <Canvas ref={canvasRef} style={{ width: displayWidth, height: displayHeight, backgroundColor: "#fff7f0" }}>
           <Group transform={[{ scale }]}>
             {displayObjects
               .sort((a, b) => a.z_index - b.z_index)

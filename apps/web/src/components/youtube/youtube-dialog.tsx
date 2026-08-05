@@ -85,10 +85,18 @@ export function YouTubeDialog({
                 variant="outline"
                 disabled={!canControl}
                 onClick={() => void setPlaybackState(!isPlaying, session?.position_ms ?? 0)}
+                aria-label={isPlaying ? "Pause video" : "Play video"}
+                aria-pressed={isPlaying}
               >
                 {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
               </Button>
-              <Button size="icon" variant="outline" disabled={!canControl} onClick={() => void playNext()}>
+              <Button
+                size="icon"
+                variant="outline"
+                disabled={!canControl}
+                onClick={() => void playNext()}
+                aria-label="Skip to next video"
+              >
                 <SkipForward className="h-4 w-4" />
               </Button>
               <Button

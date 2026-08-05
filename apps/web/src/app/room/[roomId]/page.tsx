@@ -12,6 +12,7 @@ import { TimersDialog } from "@/components/timers/timers-dialog";
 import { YouTubeDialog } from "@/components/youtube/youtube-dialog";
 import { SpotifyDialog } from "@/components/spotify/spotify-dialog";
 import { GamesDialog } from "@/components/games/games-dialog";
+import { SafetyDialog } from "@/components/moderation/safety-dialog";
 import { requireProfile } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { InviteDialog } from "./invite-dialog";
@@ -61,6 +62,7 @@ export default async function RoomPage({ params }: PageProps<"/room/[roomId]">) 
           <RoomTemplatesDialog roomId={room.id} templates={templates ?? []} />
           {canManageAll ? <RoomHistoryDialog roomId={room.id} /> : null}
           {canManageAll ? <InviteDialog roomId={room.id} /> : null}
+          {canManageAll ? <SafetyDialog roomId={room.id} isLocked={room.is_locked} /> : null}
           <Link href="/settings">
             <Button variant="ghost">Settings</Button>
           </Link>

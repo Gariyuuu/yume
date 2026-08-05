@@ -10,16 +10,28 @@ import {
 // context), so it works fine pulled straight from components-react.
 import { useTrackToggle } from "@livekit/components-react";
 import { ConnectionState, Track } from "livekit-client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ParticipantMenu } from "./ParticipantMenu";
 import { ParticipantTile } from "./ParticipantTile";
 
-export function CallView({ onLeave }: { onLeave: () => void }) {
+export function CallView({
+  roomId,
+  currentProfileId,
+  canManageAll,
+  onLeave
+}: {
+  roomId: string;
+  currentProfileId: string;
+  canManageAll: boolean;
+  onLeave: () => void;
+}) {
   const { localParticipant, isCameraEnabled, isMicrophoneEnabled } = useLocalParticipant();
   const remoteParticipants = useRemoteParticipants();
   const connectionState = useConnectionState();
   const isSpeaking = useIsSpeaking(localParticipant);
   const cameraTracks = useTracks([Track.Source.Camera]);
+  const [menuTarget, setMenuTarget] = useState<{ profileId: string; name: string } | null>(null);
 
   const mic = useTrackToggle({ source: Track.Source.Microphone });
   const camera = useTrackToggle({ source: Track.Source.Camera });
@@ -47,6 +59,7 @@ export function CallView({ onLeave }: { onLeave: () => void }) {
           cameraTrackRef={trackByIdentity.get(localParticipant.identity)}
           speaking={isSpeaking}
           muted={!isMicrophoneEnabled}
+          isSelf
         />
         {remoteParticipants.map((participant) => (
           <ParticipantTile
@@ -55,9 +68,25 @@ export function CallView({ onLeave }: { onLeave: () => void }) {
             cameraTrackRef={trackByIdentity.get(participant.identity)}
             speaking={participant.isSpeaking}
             muted={!participant.isMicrophoneEnabled}
+            isSelf={false}
+            onLongPress={() =>
+              setMenuTarget({ profileId: participant.identity, name: participant.name || participant.identity })
+            }
           />
         ))}
       </ScrollView>
+
+      {menuTarget ? (
+        <ParticipantMenu
+          visible
+          onClose={() => setMenuTarget(null)}
+          roomId={roomId}
+          currentProfileId={currentProfileId}
+          targetProfileId={menuTarget.profileId}
+          targetName={menuTarget.name}
+          canModerate={canManageAll}
+        />
+      ) : null}
 
       <View style={styles.controls}>
         <Pressable

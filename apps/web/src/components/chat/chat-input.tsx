@@ -111,6 +111,7 @@ export function ChatInput({
           variant="ghost"
           disabled={uploading}
           onClick={() => fileInputRef.current?.click()}
+          aria-label="Attach image"
         >
           <ImagePlus className="h-4 w-4" />
         </Button>
@@ -126,7 +127,7 @@ export function ChatInput({
             }
           }}
         />
-        <Button size="icon" onClick={() => void handleSubmit()}>
+        <Button size="icon" onClick={() => void handleSubmit()} aria-label="Send message">
           <Send className="h-4 w-4" />
         </Button>
       </div>

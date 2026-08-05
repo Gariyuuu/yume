@@ -1,11 +1,13 @@
 import { AudioSession, LiveKitRoom } from "@livekit/react-native";
-import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import type { useCanvasRef } from "@shopify/react-native-skia";
+import { useEffect, useRef, useState } from "react";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { CallView } from "../components/CallView";
 import { ChatModal } from "../components/ChatModal";
 import { GamesModal } from "../components/GamesModal";
 import { RoomCanvasView } from "../components/RoomCanvasView";
 import { fetchLiveKitToken } from "../lib/livekit-token";
+import { shareRoomSnapshot } from "../lib/snapshot";
 import { supabase } from "../lib/supabase";
 
 /**
@@ -33,6 +35,13 @@ export function RoomDetailScreen({
   const [creds, setCreds] = useState<{ token: string; url: string } | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [gamesOpen, setGamesOpen] = useState(false);
+  const canvasRefRef = useRef<ReturnType<typeof useCanvasRef> | null>(null);
+
+  async function handleSnapshot() {
+    if (!canvasRefRef.current) return;
+    const result = await shareRoomSnapshot(canvasRefRef.current);
+    if (result.error) Alert.alert("Couldn't share snapshot", result.error);
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -89,6 +98,9 @@ export function RoomDetailScreen({
         <Pressable onPress={() => setGamesOpen(true)}>
           <Text style={styles.link}>Games</Text>
         </Pressable>
+        <Pressable onPress={() => void handleSnapshot()}>
+          <Text style={styles.link}>Snapshot</Text>
+        </Pressable>
       </View>
       <Text style={styles.title}>{roomName ?? "Room"}</Text>
 
@@ -115,7 +127,12 @@ export function RoomDetailScreen({
           video={false}
           onDisconnected={() => setJoined(false)}
         >
-          <CallView onLeave={() => setJoined(false)} />
+          <CallView
+            roomId={roomId}
+            currentProfileId={currentProfileId}
+            canManageAll={canManageAll}
+            onLeave={() => setJoined(false)}
+          />
         </LiveKitRoom>
       ) : (
         <Pressable style={styles.joinButton} onPress={handleJoin}>
@@ -124,7 +141,14 @@ export function RoomDetailScreen({
       )}
 
       <View style={styles.canvasWrap}>
-        <RoomCanvasView roomId={roomId} currentProfileId={currentProfileId} canManageAll={canManageAll} />
+        <RoomCanvasView
+          roomId={roomId}
+          currentProfileId={currentProfileId}
+          canManageAll={canManageAll}
+          onCanvasRef={(ref) => {
+            canvasRefRef.current = ref;
+          }}
+        />
       </View>
     </View>
   );

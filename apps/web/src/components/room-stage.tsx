@@ -1,9 +1,10 @@
 "use client";
 
 import type { RoomAsset, RoomObject } from "@yume/room-schema";
-import { useState } from "react";
+import type Konva from "konva";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { muteParticipantAction } from "@/app/room/[roomId]/livekit-actions";
+import { banParticipantAction, kickParticipantAction, muteParticipantAction } from "@/app/room/[roomId]/livekit-actions";
 import { updateOwnStatusAction } from "@/app/room/[roomId]/actions";
 import { CallControls } from "@/components/call/call-controls";
 import { CallStateSync } from "@/components/call/call-state-sync";
@@ -16,6 +17,7 @@ import { DrawingToolbar } from "@/components/drawing/drawing-toolbar";
 import { useDrawingLayer } from "@/components/drawing/use-drawing-layer";
 import type { PendingAsset } from "@/components/room-canvas/room-canvas";
 import { RoomCanvasLoader } from "@/components/room-canvas/room-canvas-loader";
+import { SnapshotDialog } from "@/components/room-canvas/snapshot-dialog";
 import { StudyDialog } from "@/components/study/study-dialog";
 import { useRoomPresence } from "@/lib/presence/use-room-presence";
 
@@ -41,10 +43,26 @@ export function RoomStage({
   });
   const [pendingAsset, setPendingAsset] = useState<PendingAsset | null>(null);
   const drawing = useDrawingLayer(roomId, profile.id, canManageAll);
+  const stageRef = useRef<Konva.Stage | null>(null);
+  const bubblesContainerRef = useRef<HTMLDivElement | null>(null);
 
   async function handleMuteParticipant(targetProfileId: string) {
     const result = await muteParticipantAction(roomId, targetProfileId);
     if (result.error) toast.error(result.error);
+  }
+
+  async function handleKickParticipant(targetProfileId: string) {
+    if (!window.confirm("Remove this person from the room? They can rejoin with a valid invite.")) return;
+    const result = await kickParticipantAction(roomId, targetProfileId);
+    if (result.error) toast.error(result.error);
+    else toast.success("Removed from the room.");
+  }
+
+  async function handleBanParticipant(targetProfileId: string) {
+    if (!window.confirm("Ban this person from the room? They won't be able to rejoin.")) return;
+    const result = await banParticipantAction(roomId, targetProfileId);
+    if (result.error) toast.error(result.error);
+    else toast.success("Banned from the room.");
   }
 
   return (
@@ -72,6 +90,7 @@ export function RoomStage({
             onCancel={() => setPendingAsset(null)}
           />
           <DrawingToolbar drawing={drawing} canManageAll={canManageAll} />
+          <SnapshotDialog stageRef={stageRef} bubblesContainerRef={bubblesContainerRef} participants={participants} />
           <StudyDialog
             roomId={roomId}
             currentProfileId={profile.id}
@@ -93,14 +112,21 @@ export function RoomStage({
           canManageAll={canManageAll}
           pendingAsset={pendingAsset}
           onAssetPlaced={() => setPendingAsset(null)}
+          onStageRef={(stage) => {
+            stageRef.current = stage;
+          }}
           overlay={
             <>
               <ParticipantBubblesLayer
                 participants={participants}
                 selfProfileId={profile.id}
+                roomId={roomId}
                 canManageAll={canManageAll}
                 onDragSelf={(x, y) => updateSelf({ bubble: { x, y } })}
                 onMuteParticipant={handleMuteParticipant}
+                onKickParticipant={handleKickParticipant}
+                onBanParticipant={handleBanParticipant}
+                containerRef={bubblesContainerRef}
               />
               <DrawingCanvasLoader drawing={drawing} />
             </>

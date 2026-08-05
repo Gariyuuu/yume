@@ -1,6 +1,7 @@
 "use client";
 
 import type { RoomObject } from "@yume/room-schema";
+import type Konva from "konva";
 import dynamic from "next/dynamic";
 import type { PendingAsset } from "./room-canvas";
 
@@ -28,6 +29,7 @@ export function RoomCanvasLoader(props: {
   overlay?: React.ReactNode;
   pendingAsset?: PendingAsset | null;
   onAssetPlaced?: () => void;
+  onStageRef?: (stage: Konva.Stage | null) => void;
 }) {
   return <RoomCanvas {...props} />;
 }

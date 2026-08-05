@@ -43,10 +43,7 @@ export async function getLiveKitTokenAction(roomId: string): Promise<LiveKitToke
 
 export type MuteParticipantState = { error?: string };
 
-export async function muteParticipantAction(
-  roomId: string,
-  targetProfileId: string
-): Promise<MuteParticipantState> {
+async function callModerateParticipant(body: Record<string, unknown>): Promise<MuteParticipantState> {
   const supabase = await createClient();
   const {
     data: { session }
@@ -60,13 +57,29 @@ export async function muteParticipantAction(
       Authorization: `Bearer ${session.access_token}`,
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ room_id: roomId, target_profile_id: targetProfileId })
+    body: JSON.stringify(body)
   });
 
   if (!response.ok) {
-    const body = await response.json().catch(() => ({}));
-    return { error: body.error ?? "Could not mute that participant." };
+    const responseBody = await response.json().catch(() => ({}));
+    return { error: responseBody.error ?? "That didn't work." };
   }
 
   return {};
+}
+
+export async function muteParticipantAction(roomId: string, targetProfileId: string): Promise<MuteParticipantState> {
+  return callModerateParticipant({ room_id: roomId, target_profile_id: targetProfileId, action: "mute" });
+}
+
+export async function kickParticipantAction(roomId: string, targetProfileId: string): Promise<MuteParticipantState> {
+  return callModerateParticipant({ room_id: roomId, target_profile_id: targetProfileId, action: "kick" });
+}
+
+export async function banParticipantAction(
+  roomId: string,
+  targetProfileId: string,
+  reason?: string
+): Promise<MuteParticipantState> {
+  return callModerateParticipant({ room_id: roomId, target_profile_id: targetProfileId, action: "ban", reason });
 }

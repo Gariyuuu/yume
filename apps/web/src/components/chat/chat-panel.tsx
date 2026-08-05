@@ -29,6 +29,7 @@ export function ChatPanel({
   const [search, setSearch] = useState("");
   const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
   const [members, setMembers] = useState<{ id: string; display_name: string }[]>([]);
+  const [blockedIds, setBlockedIds] = useState<Set<string>>(new Set());
   const [lastRead, setLastRead] = useState<string>(
     () => localStorage.getItem(unreadStorageKey(roomId)) ?? ""
   );
@@ -54,6 +55,21 @@ export function ChatPanel({
     };
   }, [roomId]);
 
+  useEffect(() => {
+    let cancelled = false;
+    const supabase = createClient();
+    void supabase
+      .from("user_blocks")
+      .select("blocked_id")
+      .eq("blocker_id", currentProfileId)
+      .then(({ data }) => {
+        if (!cancelled) setBlockedIds(new Set((data ?? []).map((b) => b.blocked_id)));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [currentProfileId]);
+
   // Pure DOM sync, no setState — exempt from the "no setState in effect
   // body" rule that the mark-as-read logic below deliberately avoids by
   // living in the toggle button's click handler instead.
@@ -78,9 +94,10 @@ export function ChatPanel({
     return messages.filter((m) => m.created_at > lastRead && m.author_id !== currentProfileId).length;
   }, [messages, lastRead, currentProfileId]);
 
+  const unblockedMessages = messages.filter((m) => !m.author_id || !blockedIds.has(m.author_id));
   const visibleMessages = search.trim()
-    ? messages.filter((m) => m.body?.toLowerCase().includes(search.trim().toLowerCase()))
-    : messages;
+    ? unblockedMessages.filter((m) => m.body?.toLowerCase().includes(search.trim().toLowerCase()))
+    : unblockedMessages;
 
   const messageById = useMemo(() => new Map(messages.map((m) => [m.id, m])), [messages]);
 
@@ -104,7 +121,7 @@ export function ChatPanel({
       >
         <div className="flex items-center justify-between border-b p-3">
           <h2 className="font-semibold">Room chat</h2>
-          <Button size="icon" variant="ghost" onClick={() => setOpen(false)}>
+          <Button size="icon" variant="ghost" onClick={() => setOpen(false)} aria-label="Close chat panel">
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -127,6 +144,7 @@ export function ChatPanel({
               repliedTo={message.reply_to_id ? messageById.get(message.reply_to_id) : undefined}
               canDelete={canManageAll || message.author_id === currentProfileId}
               currentProfileId={currentProfileId}
+              roomId={roomId}
               onDelete={() => void deleteMessage(message.id)}
               onReply={() => setReplyTo(message)}
               onToggleReaction={(emoji) => void toggleReaction(message.id, emoji)}

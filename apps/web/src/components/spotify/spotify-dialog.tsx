@@ -115,14 +115,20 @@ export function SpotifyDialog({ roomId }: { roomId: string }) {
                 </div>
                 {canPlayLocally ? (
                   <>
-                    <Button size="icon" variant="outline" onClick={() => void handleTogglePlay()}>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => void handleTogglePlay()}
+                      aria-label={session?.playback_state === "playing" ? "Pause track" : "Play track"}
+                      aria-pressed={session?.playback_state === "playing"}
+                    >
                       {session?.playback_state === "playing" ? (
                         <Pause className="h-4 w-4" />
                       ) : (
                         <Play className="h-4 w-4" />
                       )}
                     </Button>
-                    <Button size="icon" variant="outline" onClick={() => void playNext()}>
+                    <Button size="icon" variant="outline" onClick={() => void playNext()} aria-label="Skip to next track">
                       <SkipForward className="h-4 w-4" />
                     </Button>
                   </>

@@ -39,6 +39,7 @@ export type RoomObjectType =
   | "decorative";
 export type MediaProvider = "youtube" | "spotify";
 export type GameType = "draw_and_guess" | "trivia" | "tic_tac_toe" | "connect_four";
+export type ReportStatus = "open" | "reviewing" | "resolved" | "dismissed";
 
 export interface Database {
   public: {
@@ -847,6 +848,210 @@ export interface Database {
           }
         ];
       };
+      room_bans: {
+        Row: {
+          id: string;
+          room_id: string;
+          profile_id: string | null;
+          banned_guest_fingerprint: string | null;
+          banned_by: string;
+          reason: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          room_id: string;
+          profile_id?: string | null;
+          banned_guest_fingerprint?: string | null;
+          banned_by: string;
+          reason?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["room_bans"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "room_bans_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "room_bans_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "room_bans_banned_by_fkey";
+            columns: ["banned_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      reports: {
+        Row: {
+          id: string;
+          room_id: string | null;
+          reported_by: string;
+          reported_profile_id: string | null;
+          message_id: string | null;
+          reason: string;
+          details: string | null;
+          status: ReportStatus;
+          created_at: string;
+          resolved_at: string | null;
+          resolved_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          room_id?: string | null;
+          reported_by: string;
+          reported_profile_id?: string | null;
+          message_id?: string | null;
+          reason: string;
+          details?: string | null;
+          status?: ReportStatus;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["reports"]["Insert"] & {
+            status: ReportStatus;
+            resolved_at: string | null;
+            resolved_by: string | null;
+          }
+        >;
+        Relationships: [
+          {
+            foreignKeyName: "reports_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "reports_reported_by_fkey";
+            columns: ["reported_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "reports_reported_profile_id_fkey";
+            columns: ["reported_profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "reports_message_id_fkey";
+            columns: ["message_id"];
+            isOneToOne: false;
+            referencedRelation: "room_messages";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      user_blocks: {
+        Row: {
+          id: string;
+          blocker_id: string;
+          blocked_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          blocker_id: string;
+          blocked_id: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["user_blocks"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "user_blocks_blocker_id_fkey";
+            columns: ["blocker_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "user_blocks_blocked_id_fkey";
+            columns: ["blocked_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      audit_logs: {
+        Row: {
+          id: string;
+          room_id: string | null;
+          actor_id: string | null;
+          action: string;
+          target_id: string | null;
+          metadata: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          room_id?: string | null;
+          actor_id?: string | null;
+          action: string;
+          target_id?: string | null;
+          metadata?: Json;
+        };
+        Update: Partial<Database["public"]["Tables"]["audit_logs"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "audit_logs_actor_id_fkey";
+            columns: ["actor_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "audit_logs_target_id_fkey";
+            columns: ["target_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          profile_id: string;
+          type: string;
+          payload: Json;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          profile_id: string;
+          type: string;
+          payload?: Json;
+        };
+        Update: Partial<Database["public"]["Tables"]["notifications"]["Insert"] & { read_at: string | null }>;
+        Relationships: [
+          {
+            foreignKeyName: "notifications_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -865,6 +1070,10 @@ export interface Database {
       increment_game_score: {
         Args: { p_session_id: string; p_profile_id: string; p_delta: number };
         Returns: undefined;
+      };
+      check_rate_limit: {
+        Args: { p_key: string; p_limit: number; p_window_seconds: number };
+        Returns: boolean;
       };
     };
   };

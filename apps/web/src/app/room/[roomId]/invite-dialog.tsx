@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,9 +13,68 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createInviteAction, type CreateInviteState } from "./actions";
+import { createClient } from "@/lib/supabase/client";
+import { createInviteAction, revokeInviteAction, type CreateInviteState } from "./actions";
 
 const initialState: CreateInviteState = {};
+
+type InviteRow = {
+  id: string;
+  token: string;
+  max_uses: number | null;
+  use_count: number;
+  expires_at: string | null;
+  revoked_at: string | null;
+};
+
+function InviteList({ roomId }: { roomId: string }) {
+  const [invites, setInvites] = useState<InviteRow[]>([]);
+  const [pending, startTransition] = useTransition();
+
+  useEffect(() => {
+    const supabase = createClient();
+    void supabase
+      .from("room_invites")
+      .select("id, token, max_uses, use_count, expires_at, revoked_at")
+      .eq("room_id", roomId)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => setInvites((data ?? []) as InviteRow[]));
+  }, [roomId]);
+
+  const active = invites.filter((i) => !i.revoked_at);
+  if (active.length === 0) return null;
+
+  return (
+    <div className="flex flex-col gap-1.5 border-t pt-3">
+      <p className="text-xs font-medium text-muted-foreground">Active invite links</p>
+      {active.map((invite) => (
+        <div key={invite.id} className="flex items-center justify-between gap-2 text-xs">
+          <span className="truncate text-muted-foreground">
+            {invite.token.slice(0, 10)}… — {invite.use_count}
+            {invite.max_uses ? `/${invite.max_uses}` : ""} used
+            {invite.expires_at ? `, expires ${new Date(invite.expires_at).toLocaleDateString()}` : ""}
+          </span>
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={pending}
+            onClick={() =>
+              startTransition(() =>
+                revokeInviteAction(invite.id, roomId).then(() =>
+                  setInvites((current) =>
+                    current.map((i) => (i.id === invite.id ? { ...i, revoked_at: new Date().toISOString() } : i))
+                  )
+                )
+              )
+            }
+          >
+            Revoke
+          </Button>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function InviteDialog({ roomId }: { roomId: string }) {
   const [state, formAction, pending] = useActionState(createInviteAction, initialState);
@@ -75,6 +134,8 @@ export function InviteDialog({ roomId }: { roomId: string }) {
             </DialogFooter>
           </form>
         )}
+
+        <InviteList roomId={roomId} />
       </DialogContent>
     </Dialog>
   );

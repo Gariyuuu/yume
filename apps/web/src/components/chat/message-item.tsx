@@ -1,7 +1,9 @@
 "use client";
 
-import { Reply, Trash2 } from "lucide-react";
+import { Flag, Reply, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ReportDialog } from "@/components/moderation/report-dialog";
 import { cn } from "@/lib/utils";
 import { MessageText } from "./message-text";
 import type { ChatMessage } from "./use-room-chat";
@@ -13,6 +15,7 @@ export function MessageItem({
   repliedTo,
   canDelete,
   currentProfileId,
+  roomId,
   onDelete,
   onReply,
   onToggleReaction
@@ -21,10 +24,12 @@ export function MessageItem({
   repliedTo: ChatMessage | undefined;
   canDelete: boolean;
   currentProfileId: string;
+  roomId: string;
   onDelete: () => void;
   onReply: () => void;
   onToggleReaction: (emoji: string) => void;
 }) {
+  const [reportOpen, setReportOpen] = useState(false);
   const reactionCounts = message.message_reactions.reduce<Record<string, number>>((acc, r) => {
     acc[r.emoji] = (acc[r.emoji] ?? 0) + 1;
     return acc;
@@ -108,11 +113,22 @@ export function MessageItem({
                   {emoji}
                 </button>
               ))}
-              <Button size="icon" variant="ghost" className="h-5 w-5" onClick={onReply}>
+              <Button size="icon" variant="ghost" className="h-5 w-5" onClick={onReply} aria-label="Reply to message">
                 <Reply className="h-3 w-3" />
               </Button>
+              {message.author_id !== currentProfileId ? (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-5 w-5"
+                  onClick={() => setReportOpen(true)}
+                  aria-label="Report message"
+                >
+                  <Flag className="h-3 w-3" />
+                </Button>
+              ) : null}
               {canDelete ? (
-                <Button size="icon" variant="ghost" className="h-5 w-5" onClick={onDelete}>
+                <Button size="icon" variant="ghost" className="h-5 w-5" onClick={onDelete} aria-label="Delete message">
                   <Trash2 className="h-3 w-3" />
                 </Button>
               ) : null}
@@ -120,6 +136,15 @@ export function MessageItem({
           </div>
         </div>
       </div>
+
+      <ReportDialog
+        open={reportOpen}
+        onOpenChange={setReportOpen}
+        roomId={roomId}
+        targetProfileId={message.author_id}
+        messageId={message.id}
+        targetLabel="message"
+      />
     </div>
   );
 }

@@ -112,6 +112,15 @@ async function handleJoin(req: Request) {
   const token = typeof body.token === "string" ? body.token : null;
   const password = typeof body.password === "string" ? body.password : undefined;
 
+  const { data: allowed } = await adminClient.rpc("check_rate_limit", {
+    p_key: `join:${user.id}`,
+    p_limit: 20,
+    p_window_seconds: 600
+  });
+  if (allowed === false) {
+    return json({ status: "error", reason: "rate_limited" }, 429);
+  }
+
   const { invite, room } = await loadInvite(token);
   if (!invite || !room) {
     return json({ status: "error", reason: "invalid_token" }, 404);
@@ -147,6 +156,11 @@ async function handleJoin(req: Request) {
 
   if (existingMembership) {
     return json({ status: "joined", room_id: room.id });
+  }
+
+  const { data: fullRoom } = await adminClient.from("rooms").select("is_locked").eq("id", room.id).single();
+  if (fullRoom?.is_locked) {
+    return json({ status: "error", reason: "room_locked" }, 403);
   }
 
   const { count: memberCount } = await adminClient

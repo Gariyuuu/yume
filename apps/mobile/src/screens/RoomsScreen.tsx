@@ -41,10 +41,12 @@ async function ensureProfile(session: Session) {
 export function RoomsScreen({
   session,
   onOpenRoom,
+  onOpenSettings,
   onSignOut
 }: {
   session: Session;
   onOpenRoom: (roomId: string) => void;
+  onOpenSettings: () => void;
   onSignOut: () => void;
 }) {
   const [rooms, setRooms] = useState<RoomListItem[]>([]);
@@ -99,9 +101,14 @@ export function RoomsScreen({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Your rooms</Text>
-        <Pressable onPress={onSignOut}>
-          <Text style={styles.link}>Sign out</Text>
-        </Pressable>
+        <View style={styles.headerLinks}>
+          <Pressable onPress={onOpenSettings}>
+            <Text style={styles.link}>Settings</Text>
+          </Pressable>
+          <Pressable onPress={onSignOut}>
+            <Text style={styles.link}>Sign out</Text>
+          </Pressable>
+        </View>
       </View>
 
       <View style={styles.createRow}>
@@ -141,6 +148,7 @@ export function RoomsScreen({
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff7f0" },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  headerLinks: { flexDirection: "row", gap: 16 },
   title: { fontSize: 24, fontWeight: "600" },
   link: { color: "#6b1988" },
   createRow: { flexDirection: "row", gap: 8, marginTop: 16 },

@@ -28,7 +28,8 @@ export function RoomCanvas({
   canManageAll,
   overlay,
   pendingAsset,
-  onAssetPlaced
+  onAssetPlaced,
+  onStageRef
 }: {
   roomId: string;
   initialObjects: RoomObject[];
@@ -37,6 +38,7 @@ export function RoomCanvas({
   overlay?: React.ReactNode;
   pendingAsset?: PendingAsset | null;
   onAssetPlaced?: () => void;
+  onStageRef?: (stage: Konva.Stage | null) => void;
 }) {
   const supabase = useMemo(() => createClient(), []);
   const [objects, setObjects] = useState<Record<string, RoomObject>>(() =>
@@ -367,7 +369,7 @@ export function RoomCanvas({
         className="relative w-full overflow-auto rounded-card border bg-room-bg"
         style={{ cursor: pendingAsset ? "copy" : undefined }}
       >
-        <Stage width={ROOM_WIDTH} height={ROOM_HEIGHT} onMouseDown={handleStageMouseDown}>
+        <Stage width={ROOM_WIDTH} height={ROOM_HEIGHT} onMouseDown={handleStageMouseDown} ref={onStageRef}>
           <Layer>
             {objectList.map((object) => {
               const displayObject = liveOverrides[object.id]

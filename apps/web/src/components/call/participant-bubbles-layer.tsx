@@ -19,15 +19,23 @@ import { ParticipantBubble } from "./participant-bubble";
 export function ParticipantBubblesLayer({
   participants,
   selfProfileId,
+  roomId,
   canManageAll,
   onDragSelf,
-  onMuteParticipant
+  onMuteParticipant,
+  onKickParticipant,
+  onBanParticipant,
+  containerRef
 }: {
   participants: Record<string, RoomPresence>;
   selfProfileId: string;
+  roomId: string;
   canManageAll: boolean;
   onDragSelf: (x: number, y: number) => void;
   onMuteParticipant: (profileId: string) => void;
+  onKickParticipant: (profileId: string) => void;
+  onBanParticipant: (profileId: string) => void;
+  containerRef?: React.Ref<HTMLDivElement>;
 }) {
   const cameraTracks = useTracks([Track.Source.Camera]);
   const trackByIdentity = useMemo(() => {
@@ -40,6 +48,7 @@ export function ParticipantBubblesLayer({
 
   return (
     <div
+      ref={containerRef}
       className="pointer-events-none absolute left-0 top-0"
       style={{ width: ROOM_WIDTH, height: ROOM_HEIGHT }}
     >
@@ -52,8 +61,11 @@ export function ParticipantBubblesLayer({
             trackRef={trackByIdentity.get(presence.profileId)}
             isSelf={isSelf}
             canModerate={canManageAll && !isSelf}
+            roomId={roomId}
             onDragEnd={isSelf ? onDragSelf : undefined}
             onMute={() => onMuteParticipant(presence.profileId)}
+            onKick={() => onKickParticipant(presence.profileId)}
+            onBan={() => onBanParticipant(presence.profileId)}
           />
         );
       })}

@@ -97,15 +97,15 @@ export function StudyDialog({
           </span>
           <div className="flex gap-2">
             {isRunning ? (
-              <Button size="icon" variant="outline" onClick={() => void pause()}>
+              <Button size="icon" variant="outline" onClick={() => void pause()} aria-label="Pause study session">
                 <Pause className="h-4 w-4" />
               </Button>
             ) : (
-              <Button size="icon" onClick={() => void start()}>
+              <Button size="icon" onClick={() => void start()} aria-label="Start study session">
                 <Play className="h-4 w-4" />
               </Button>
             )}
-            <Button size="icon" variant="outline" onClick={() => void reset()}>
+            <Button size="icon" variant="outline" onClick={() => void reset()} aria-label="Reset study timer">
               <RotateCcw className="h-4 w-4" />
             </Button>
           </div>

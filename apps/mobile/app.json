@@ -12,12 +12,26 @@
       "infoPlist": {
         "NSCameraUsageDescription": "Yume uses your camera so friends can see you when you turn on your camera bubble.",
         "NSMicrophoneUsageDescription": "Yume uses your microphone for voice chat in rooms.",
-        "UIBackgroundModes": ["voip"]
+        "UIBackgroundModes": [
+          "voip"
+        ]
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+          }
+        ]
       }
     },
     "android": {
       "package": "com.yume.app",
-      "permissions": ["CAMERA", "RECORD_AUDIO", "MODIFY_AUDIO_SETTINGS"],
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "MODIFY_AUDIO_SETTINGS"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -30,8 +44,16 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      ["@livekit/react-native-expo-plugin", { "android": { "audioType": "communication" } }],
-      "@config-plugins/react-native-webrtc"
+      [
+        "@livekit/react-native-expo-plugin",
+        {
+          "android": {
+            "audioType": "communication"
+          }
+        }
+      ],
+      "@config-plugins/react-native-webrtc",
+      "expo-sharing"
     ]
   }
 }

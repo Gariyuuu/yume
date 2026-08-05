@@ -45,6 +45,7 @@ export const joinRoomResponseSchema = z.discriminatedUnion("status", [
       "wrong_password",
       "room_full",
       "banned",
+      "room_locked",
       "rate_limited"
     ])
   })
