@@ -108,6 +108,25 @@ async function handleJoin(req: Request) {
     return json({ status: "error", reason: "invalid_token" }, 401);
   }
 
+  // room_memberships.profile_id is a hard FK to profiles(id) — a brand
+  // new guest (just signed in anonymously) or a brand new real user
+  // whose very first action is clicking an invite link has no profiles
+  // row yet at this point, so the membership insert further down would
+  // fail on the foreign key with no useful error surfaced to the
+  // client. Same lazy-create-on-first-use pattern as apps/web's
+  // requireProfile() / apps/mobile's ensureProfile() — ignoreDuplicates
+  // so an existing profile's display_name is never overwritten.
+  const displayName =
+    (user.user_metadata?.["display_name"] as string | undefined) ??
+    user.email?.split("@")[0] ??
+    "Friend";
+  await adminClient
+    .from("profiles")
+    .upsert(
+      { id: user.id, display_name: displayName, is_guest: user.is_anonymous ?? false },
+      { onConflict: "id", ignoreDuplicates: true }
+    );
+
   const body = await req.json().catch(() => ({}));
   const token = typeof body.token === "string" ? body.token : null;
   const password = typeof body.password === "string" ? body.password : undefined;
@@ -189,7 +208,7 @@ async function handleJoin(req: Request) {
   });
 
   if (membershipError) {
-    return json({ status: "error", reason: "invalid_token" }, 500);
+    return json({ status: "error", reason: "join_failed" }, 500);
   }
 
   await adminClient

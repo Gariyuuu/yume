@@ -85,6 +85,8 @@ function describeJoinError(reason: string): string {
       return "You've been removed from this room.";
     case "room_locked":
       return "This room is locked and isn't accepting new members right now.";
+    case "join_failed":
+      return "Something went wrong joining that room. Try again.";
     case "rate_limited":
       return "Too many attempts — try again in a moment.";
     default:
