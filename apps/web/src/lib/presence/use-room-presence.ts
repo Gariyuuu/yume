@@ -25,7 +25,8 @@ export function useRoomPresence(
     livekitConnected: false,
     muted: true,
     cameraOn: false,
-    speaking: false
+    speaking: false,
+    doNotDisturb: false
   }));
 
   useEffect(() => {

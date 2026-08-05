@@ -9,3 +9,7 @@ export * from "./note";
 export * from "./drawing";
 export * from "./live-event";
 export * from "./version";
+export * from "./message";
+export * from "./media";
+export * from "./timer";
+export * from "./study";

@@ -2,9 +2,17 @@ import { AudioSession, LiveKitRoom } from "@livekit/react-native";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { CallView } from "../components/CallView";
+import { ChatModal } from "../components/ChatModal";
 import { RoomCanvasView } from "../components/RoomCanvasView";
 import { fetchLiveKitToken } from "../lib/livekit-token";
 import { supabase } from "../lib/supabase";
+
+/**
+ * Phase 5 mobile scope is chat only — YouTube/Spotify/timers/study mode
+ * stay web-only for now (real subsystems, not stubs, just not ported
+ * here yet). Matches the "thinner mobile slice, clearly documented"
+ * pattern from every prior phase.
+ */
 
 export function RoomDetailScreen({
   roomId,
@@ -19,6 +27,7 @@ export function RoomDetailScreen({
   const [canManageAll, setCanManageAll] = useState(false);
   const [joined, setJoined] = useState(false);
   const [creds, setCreds] = useState<{ token: string; url: string } | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,10 +74,23 @@ export function RoomDetailScreen({
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={onBack}>
-        <Text style={styles.link}>← Rooms</Text>
-      </Pressable>
+      <View style={styles.topRow}>
+        <Pressable onPress={onBack}>
+          <Text style={styles.link}>← Rooms</Text>
+        </Pressable>
+        <Pressable onPress={() => setChatOpen(true)}>
+          <Text style={styles.link}>Chat</Text>
+        </Pressable>
+      </View>
       <Text style={styles.title}>{roomName ?? "Room"}</Text>
+
+      <ChatModal
+        visible={chatOpen}
+        onClose={() => setChatOpen(false)}
+        roomId={roomId}
+        currentProfileId={currentProfileId}
+        canManageAll={canManageAll}
+      />
 
       {joined && creds ? (
         <LiveKitRoom
@@ -96,7 +118,8 @@ export function RoomDetailScreen({
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff7f0" },
-  link: { color: "#6b1988", marginBottom: 12 },
+  topRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 12 },
+  link: { color: "#6b1988" },
   title: { fontSize: 24, fontWeight: "600" },
   canvasWrap: { marginTop: 16, flex: 1 },
   joinButton: {

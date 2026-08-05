@@ -4,6 +4,7 @@ import type { RoomAsset, RoomObject } from "@yume/room-schema";
 import { useState } from "react";
 import { toast } from "sonner";
 import { muteParticipantAction } from "@/app/room/[roomId]/livekit-actions";
+import { updateOwnStatusAction } from "@/app/room/[roomId]/actions";
 import { CallControls } from "@/components/call/call-controls";
 import { CallStateSync } from "@/components/call/call-state-sync";
 import { ParticipantBubblesLayer } from "@/components/call/participant-bubbles-layer";
@@ -15,6 +16,7 @@ import { DrawingToolbar } from "@/components/drawing/drawing-toolbar";
 import { useDrawingLayer } from "@/components/drawing/use-drawing-layer";
 import type { PendingAsset } from "@/components/room-canvas/room-canvas";
 import { RoomCanvasLoader } from "@/components/room-canvas/room-canvas-loader";
+import { StudyDialog } from "@/components/study/study-dialog";
 import { useRoomPresence } from "@/lib/presence/use-room-presence";
 
 export function RoomStage({
@@ -70,6 +72,18 @@ export function RoomStage({
             onCancel={() => setPendingAsset(null)}
           />
           <DrawingToolbar drawing={drawing} canManageAll={canManageAll} />
+          <StudyDialog
+            roomId={roomId}
+            currentProfileId={profile.id}
+            isStudying={self.status === "studying"}
+            doNotDisturb={self.doNotDisturb}
+            onStudyingChange={(studying) => {
+              const status = studying ? "studying" : "online";
+              updateSelf({ status });
+              void updateOwnStatusAction(status);
+            }}
+            onDoNotDisturbChange={(dnd) => updateSelf({ doNotDisturb: dnd })}
+          />
         </div>
 
         <RoomCanvasLoader

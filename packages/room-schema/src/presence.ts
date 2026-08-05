@@ -16,6 +16,7 @@ export const roomPresenceSchema = z.object({
   livekitConnected: z.boolean(),
   muted: z.boolean(),
   cameraOn: z.boolean(),
-  speaking: z.boolean()
+  speaking: z.boolean(),
+  doNotDisturb: z.boolean()
 });
 export type RoomPresence = z.infer<typeof roomPresenceSchema>;

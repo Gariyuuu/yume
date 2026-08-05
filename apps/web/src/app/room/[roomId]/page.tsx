@@ -3,10 +3,14 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ChatPanel } from "@/components/chat/chat-panel";
 import { RoomHistoryDialog } from "@/components/decoration/room-history-dialog";
 import { RoomTemplatesDialog } from "@/components/decoration/room-templates-dialog";
 import { NotesDialog } from "@/components/notes/notes-dialog";
 import { RoomStage } from "@/components/room-stage";
+import { TimersDialog } from "@/components/timers/timers-dialog";
+import { YouTubeDialog } from "@/components/youtube/youtube-dialog";
+import { SpotifyDialog } from "@/components/spotify/spotify-dialog";
 import { requireProfile } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { InviteDialog } from "./invite-dialog";
@@ -49,6 +53,9 @@ export default async function RoomPage({ params }: PageProps<"/room/[roomId]">) 
         </div>
         <div className="flex items-center gap-2">
           <NotesDialog roomId={room.id} currentProfileId={profile.id} canManageAll={canManageAll} />
+          <TimersDialog roomId={room.id} currentProfileId={profile.id} canManageAll={canManageAll} />
+          <YouTubeDialog roomId={room.id} canManageAll={canManageAll} />
+          <SpotifyDialog roomId={room.id} />
           <RoomTemplatesDialog roomId={room.id} templates={templates ?? []} />
           {canManageAll ? <RoomHistoryDialog roomId={room.id} /> : null}
           {canManageAll ? <InviteDialog roomId={room.id} /> : null}
@@ -72,6 +79,8 @@ export default async function RoomPage({ params }: PageProps<"/room/[roomId]">) 
           audioMode={room.audio_mode}
         />
       </main>
+
+      <ChatPanel roomId={room.id} currentProfileId={profile.id} canManageAll={canManageAll} />
     </div>
   );
 }

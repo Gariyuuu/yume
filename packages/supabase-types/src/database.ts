@@ -37,6 +37,7 @@ export type RoomObjectType =
   | "embed"
   | "drawing"
   | "decorative";
+export type MediaProvider = "youtube" | "spotify";
 
 export interface Database {
   public: {
@@ -411,6 +412,301 @@ export interface Database {
         Relationships: [
           {
             foreignKeyName: "room_drawings_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      room_messages: {
+        Row: {
+          id: string;
+          room_id: string;
+          author_id: string | null;
+          body: string | null;
+          image_url: string | null;
+          reply_to_id: string | null;
+          mentions: string[];
+          deleted_at: string | null;
+          deleted_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          room_id: string;
+          author_id?: string | null;
+          body?: string | null;
+          image_url?: string | null;
+          reply_to_id?: string | null;
+          mentions?: string[];
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["room_messages"]["Insert"] & {
+            deleted_at: string | null;
+            deleted_by: string | null;
+          }
+        >;
+        Relationships: [
+          {
+            foreignKeyName: "room_messages_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "room_messages_author_id_fkey";
+            columns: ["author_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "room_messages_reply_to_id_fkey";
+            columns: ["reply_to_id"];
+            isOneToOne: false;
+            referencedRelation: "room_messages";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      message_reactions: {
+        Row: {
+          id: string;
+          message_id: string;
+          profile_id: string;
+          emoji: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          message_id: string;
+          profile_id: string;
+          emoji: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["message_reactions"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "message_reactions_message_id_fkey";
+            columns: ["message_id"];
+            isOneToOne: false;
+            referencedRelation: "room_messages";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "message_reactions_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      media_sessions: {
+        Row: {
+          id: string;
+          room_id: string;
+          provider: MediaProvider;
+          control_mode: string;
+          current_item_id: string | null;
+          playback_state: string;
+          position_ms: number;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          room_id: string;
+          provider: MediaProvider;
+          control_mode?: string;
+          current_item_id?: string | null;
+          playback_state?: string;
+          position_ms?: number;
+          updated_by?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["media_sessions"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "media_sessions_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      media_queue_items: {
+        Row: {
+          id: string;
+          session_id: string;
+          provider: MediaProvider;
+          external_id: string;
+          title: string | null;
+          thumbnail_url: string | null;
+          duration_ms: number | null;
+          added_by: string | null;
+          position: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          session_id: string;
+          provider: MediaProvider;
+          external_id: string;
+          title?: string | null;
+          thumbnail_url?: string | null;
+          duration_ms?: number | null;
+          added_by?: string | null;
+          position?: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["media_queue_items"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "media_queue_items_session_id_fkey";
+            columns: ["session_id"];
+            isOneToOne: false;
+            referencedRelation: "media_sessions";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      spotify_connections: {
+        Row: {
+          id: string;
+          profile_id: string;
+          spotify_user_id: string;
+          access_token: string;
+          refresh_token: string;
+          scope: string;
+          expires_at: string;
+          is_premium: boolean | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          profile_id: string;
+          spotify_user_id: string;
+          access_token: string;
+          refresh_token: string;
+          scope: string;
+          expires_at: string;
+          is_premium?: boolean | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["spotify_connections"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "spotify_connections_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      study_sessions: {
+        Row: {
+          id: string;
+          room_id: string;
+          work_minutes: number;
+          break_minutes: number;
+          status: string;
+          started_at: string | null;
+          ambient_audio_url: string | null;
+          do_not_disturb: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          room_id: string;
+          work_minutes?: number;
+          break_minutes?: number;
+          status?: string;
+          started_at?: string | null;
+          ambient_audio_url?: string | null;
+          do_not_disturb?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["study_sessions"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "study_sessions_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      timers: {
+        Row: {
+          id: string;
+          room_id: string;
+          type: string;
+          mode: string;
+          owner_id: string | null;
+          duration_seconds: number | null;
+          target_at: string | null;
+          status: string;
+          started_at: string | null;
+          alarm_sound: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          room_id: string;
+          type: string;
+          mode?: string;
+          owner_id?: string | null;
+          duration_seconds?: number | null;
+          target_at?: string | null;
+          status?: string;
+          started_at?: string | null;
+          alarm_sound?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["timers"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "timers_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "timers_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      study_focus_logs: {
+        Row: {
+          id: string;
+          profile_id: string;
+          room_id: string | null;
+          minutes: number;
+          completed_at: string;
+        };
+        Insert: {
+          id?: string;
+          profile_id: string;
+          room_id?: string | null;
+          minutes: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["study_focus_logs"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "study_focus_logs_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "study_focus_logs_room_id_fkey";
             columns: ["room_id"];
             isOneToOne: false;
             referencedRelation: "rooms";
