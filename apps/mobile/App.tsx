@@ -33,7 +33,11 @@ export default function App() {
   return (
     <SafeAreaView style={styles.flex}>
       {openRoomId ? (
-        <RoomDetailScreen roomId={openRoomId} onBack={() => setOpenRoomId(null)} />
+        <RoomDetailScreen
+          roomId={openRoomId}
+          currentProfileId={session.user.id}
+          onBack={() => setOpenRoomId(null)}
+        />
       ) : (
         <RoomsScreen
           session={session}

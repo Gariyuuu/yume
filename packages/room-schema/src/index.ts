@@ -4,3 +4,8 @@ export * from "./room";
 export * from "./room-object";
 export * from "./invite";
 export * from "./presence";
+export * from "./asset";
+export * from "./note";
+export * from "./drawing";
+export * from "./live-event";
+export * from "./version";

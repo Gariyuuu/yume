@@ -1,8 +1,11 @@
-import type { RoomObject } from "@yume/room-schema";
+import type { RoomAsset, RoomObject } from "@yume/room-schema";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { RoomHistoryDialog } from "@/components/decoration/room-history-dialog";
+import { RoomTemplatesDialog } from "@/components/decoration/room-templates-dialog";
+import { NotesDialog } from "@/components/notes/notes-dialog";
 import { RoomStage } from "@/components/room-stage";
 import { requireProfile } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
@@ -13,16 +16,19 @@ export default async function RoomPage({ params }: PageProps<"/room/[roomId]">) 
   const profile = await requireProfile();
   const supabase = await createClient();
 
-  const [{ data: room }, { data: membership }, { data: objects }] = await Promise.all([
-    supabase.from("rooms").select("*").eq("id", roomId).maybeSingle(),
-    supabase
-      .from("room_memberships")
-      .select("role")
-      .eq("room_id", roomId)
-      .eq("profile_id", profile.id)
-      .maybeSingle(),
-    supabase.from("room_objects").select("*").eq("room_id", roomId)
-  ]);
+  const [{ data: room }, { data: membership }, { data: objects }, { data: assets }, { data: templates }] =
+    await Promise.all([
+      supabase.from("rooms").select("*").eq("id", roomId).maybeSingle(),
+      supabase
+        .from("room_memberships")
+        .select("role")
+        .eq("room_id", roomId)
+        .eq("profile_id", profile.id)
+        .maybeSingle(),
+      supabase.from("room_objects").select("*").eq("room_id", roomId),
+      supabase.from("room_assets").select("*").eq("is_active", true).order("category"),
+      supabase.from("room_templates").select("id, name, description").order("name")
+    ]);
 
   if (!room) notFound();
   if (!membership) redirect("/rooms");
@@ -31,7 +37,7 @@ export default async function RoomPage({ params }: PageProps<"/room/[roomId]">) 
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="flex items-center justify-between border-b px-6 py-4">
+      <header className="flex flex-wrap items-center justify-between gap-2 border-b px-6 py-4">
         <div className="flex items-center gap-3">
           <Link href="/rooms" className="text-sm text-muted-foreground underline underline-offset-4">
             ← Rooms
@@ -42,6 +48,9 @@ export default async function RoomPage({ params }: PageProps<"/room/[roomId]">) 
           </Badge>
         </div>
         <div className="flex items-center gap-2">
+          <NotesDialog roomId={room.id} currentProfileId={profile.id} canManageAll={canManageAll} />
+          <RoomTemplatesDialog roomId={room.id} templates={templates ?? []} />
+          {canManageAll ? <RoomHistoryDialog roomId={room.id} /> : null}
           {canManageAll ? <InviteDialog roomId={room.id} /> : null}
           <Link href="/settings">
             <Button variant="ghost">Settings</Button>
@@ -53,6 +62,7 @@ export default async function RoomPage({ params }: PageProps<"/room/[roomId]">) 
         <RoomStage
           roomId={room.id}
           initialObjects={(objects ?? []) as RoomObject[]}
+          assets={(assets ?? []) as RoomAsset[]}
           profile={{
             id: profile.id,
             display_name: profile.display_name,

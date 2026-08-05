@@ -420,6 +420,19 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      restore_room_version: {
+        Args: { p_room_id: string; p_version_id: string };
+        Returns: undefined;
+      };
+      append_drawing_stroke: {
+        Args: { p_room_id: string; p_stroke: Json };
+        Returns: undefined;
+      };
+      clear_drawing_layer: {
+        Args: { p_room_id: string };
+        Returns: undefined;
+      };
+    };
   };
 }

@@ -1,24 +1,22 @@
-import type { RoomObject } from "@yume/room-schema";
 import { AudioSession, LiveKitRoom } from "@livekit/react-native";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { CallView } from "../components/CallView";
+import { RoomCanvasView } from "../components/RoomCanvasView";
 import { fetchLiveKitToken } from "../lib/livekit-token";
 import { supabase } from "../lib/supabase";
 
-/**
- * Voice/video (Phase 3) is real here — camera bubbles dragged around a
- * shared canvas are not yet, since that needs the React Native Skia
- * renderer sharing the room-object model with the web Konva canvas
- * (docs/phase-1/02-architecture.md §3), scoped to Phase 4 alongside web's
- * decoration tools. The object list below stays read-only until then,
- * proving the same @yume/room-schema data loads correctly on mobile
- * rather than faking a canvas that isn't there yet.
- */
-export function RoomDetailScreen({ roomId, onBack }: { roomId: string; onBack: () => void }) {
+export function RoomDetailScreen({
+  roomId,
+  currentProfileId,
+  onBack
+}: {
+  roomId: string;
+  currentProfileId: string;
+  onBack: () => void;
+}) {
   const [roomName, setRoomName] = useState<string | null>(null);
-  const [objects, setObjects] = useState<RoomObject[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [canManageAll, setCanManageAll] = useState(false);
   const [joined, setJoined] = useState(false);
   const [creds, setCreds] = useState<{ token: string; url: string } | null>(null);
 
@@ -26,22 +24,26 @@ export function RoomDetailScreen({ roomId, onBack }: { roomId: string; onBack: (
     let cancelled = false;
 
     async function load() {
-      const [{ data: room }, { data: roomObjects }] = await Promise.all([
+      const [{ data: room }, { data: membership }] = await Promise.all([
         supabase.from("rooms").select("name").eq("id", roomId).maybeSingle(),
-        supabase.from("room_objects").select("*").eq("room_id", roomId)
+        supabase
+          .from("room_memberships")
+          .select("role")
+          .eq("room_id", roomId)
+          .eq("profile_id", currentProfileId)
+          .maybeSingle()
       ]);
 
       if (cancelled) return;
       setRoomName(room?.name ?? null);
-      setObjects((roomObjects ?? []) as RoomObject[]);
-      setLoading(false);
+      setCanManageAll(membership?.role === "owner" || membership?.role === "moderator");
     }
 
     void load();
     return () => {
       cancelled = true;
     };
-  }, [roomId]);
+  }, [roomId, currentProfileId]);
 
   // LiveKit RN's documented pattern: an active audio session is required
   // for call audio to route correctly on-device, started only while a
@@ -85,29 +87,9 @@ export function RoomDetailScreen({ roomId, onBack }: { roomId: string; onBack: (
         </Pressable>
       )}
 
-      <Text style={styles.notice}>
-        The drag-around room canvas ships on iOS in Phase 4. This is a read-only preview
-        of what&rsquo;s in the room.
-      </Text>
-
-      {loading ? (
-        <ActivityIndicator style={{ marginTop: 24 }} />
-      ) : (
-        <FlatList
-          data={objects}
-          keyExtractor={(object) => object.id}
-          contentContainerStyle={{ gap: 8, paddingTop: 12 }}
-          ListEmptyComponent={<Text style={styles.empty}>Nothing placed in this room yet.</Text>}
-          renderItem={({ item }) => (
-            <View style={styles.objectRow}>
-              <Text style={styles.objectType}>{item.type}</Text>
-              <Text style={styles.objectPos}>
-                ({Math.round(item.x)}, {Math.round(item.y)})
-              </Text>
-            </View>
-          )}
-        />
-      )}
+      <View style={styles.canvasWrap}>
+        <RoomCanvasView roomId={roomId} currentProfileId={currentProfileId} canManageAll={canManageAll} />
+      </View>
     </View>
   );
 }
@@ -116,7 +98,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff7f0" },
   link: { color: "#6b1988", marginBottom: 12 },
   title: { fontSize: 24, fontWeight: "600" },
-  notice: { color: "#888", marginTop: 12 },
+  canvasWrap: { marginTop: 16, flex: 1 },
   joinButton: {
     marginTop: 12,
     backgroundColor: "#9f22cd",
@@ -124,15 +106,5 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: "center"
   },
-  joinButtonText: { color: "#fff", fontWeight: "600" },
-  objectRow: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 12,
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  objectType: { textTransform: "capitalize", fontWeight: "600" },
-  objectPos: { color: "#888" },
-  empty: { textAlign: "center", color: "#888", marginTop: 24 }
+  joinButtonText: { color: "#fff", fontWeight: "600" }
 });

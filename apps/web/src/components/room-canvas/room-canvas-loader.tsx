@@ -2,6 +2,7 @@
 
 import type { RoomObject } from "@yume/room-schema";
 import dynamic from "next/dynamic";
+import type { PendingAsset } from "./room-canvas";
 
 // Konva touches `window`/`document` at import time, so it can only ever
 // render on the client — `ssr: false` is only valid from within a Client
@@ -25,6 +26,8 @@ export function RoomCanvasLoader(props: {
   currentProfileId: string;
   canManageAll: boolean;
   overlay?: React.ReactNode;
+  pendingAsset?: PendingAsset | null;
+  onAssetPlaced?: () => void;
 }) {
   return <RoomCanvas {...props} />;
 }
