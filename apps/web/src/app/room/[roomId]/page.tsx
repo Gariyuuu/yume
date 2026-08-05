@@ -11,6 +11,7 @@ import { RoomStage } from "@/components/room-stage";
 import { TimersDialog } from "@/components/timers/timers-dialog";
 import { YouTubeDialog } from "@/components/youtube/youtube-dialog";
 import { SpotifyDialog } from "@/components/spotify/spotify-dialog";
+import { GamesDialog } from "@/components/games/games-dialog";
 import { requireProfile } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { InviteDialog } from "./invite-dialog";
@@ -56,6 +57,7 @@ export default async function RoomPage({ params }: PageProps<"/room/[roomId]">) 
           <TimersDialog roomId={room.id} currentProfileId={profile.id} canManageAll={canManageAll} />
           <YouTubeDialog roomId={room.id} canManageAll={canManageAll} />
           <SpotifyDialog roomId={room.id} />
+          <GamesDialog roomId={room.id} currentProfileId={profile.id} canManageAll={canManageAll} />
           <RoomTemplatesDialog roomId={room.id} templates={templates ?? []} />
           {canManageAll ? <RoomHistoryDialog roomId={room.id} /> : null}
           {canManageAll ? <InviteDialog roomId={room.id} /> : null}

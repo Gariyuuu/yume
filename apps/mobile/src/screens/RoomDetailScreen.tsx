@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { CallView } from "../components/CallView";
 import { ChatModal } from "../components/ChatModal";
+import { GamesModal } from "../components/GamesModal";
 import { RoomCanvasView } from "../components/RoomCanvasView";
 import { fetchLiveKitToken } from "../lib/livekit-token";
 import { supabase } from "../lib/supabase";
@@ -11,7 +12,10 @@ import { supabase } from "../lib/supabase";
  * Phase 5 mobile scope is chat only — YouTube/Spotify/timers/study mode
  * stay web-only for now (real subsystems, not stubs, just not ported
  * here yet). Matches the "thinner mobile slice, clearly documented"
- * pattern from every prior phase.
+ * pattern from every prior phase. Phase 6 adds Tic-Tac-Toe (see
+ * GamesModal.tsx's header comment for why it's the only game on mobile,
+ * and camera effects stay web-only — no on-device Vision/Core Image
+ * pipeline built for RN yet).
  */
 
 export function RoomDetailScreen({
@@ -28,6 +32,7 @@ export function RoomDetailScreen({
   const [joined, setJoined] = useState(false);
   const [creds, setCreds] = useState<{ token: string; url: string } | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
+  const [gamesOpen, setGamesOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -81,6 +86,9 @@ export function RoomDetailScreen({
         <Pressable onPress={() => setChatOpen(true)}>
           <Text style={styles.link}>Chat</Text>
         </Pressable>
+        <Pressable onPress={() => setGamesOpen(true)}>
+          <Text style={styles.link}>Games</Text>
+        </Pressable>
       </View>
       <Text style={styles.title}>{roomName ?? "Room"}</Text>
 
@@ -90,6 +98,12 @@ export function RoomDetailScreen({
         roomId={roomId}
         currentProfileId={currentProfileId}
         canManageAll={canManageAll}
+      />
+      <GamesModal
+        visible={gamesOpen}
+        onClose={() => setGamesOpen(false)}
+        roomId={roomId}
+        currentProfileId={currentProfileId}
       />
 
       {joined && creds ? (

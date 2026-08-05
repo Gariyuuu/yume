@@ -38,6 +38,7 @@ export type RoomObjectType =
   | "drawing"
   | "decorative";
 export type MediaProvider = "youtube" | "spotify";
+export type GameType = "draw_and_guess" | "trivia" | "tic_tac_toe" | "connect_four";
 
 export interface Database {
   public: {
@@ -714,6 +715,138 @@ export interface Database {
           }
         ];
       };
+      game_sessions: {
+        Row: {
+          id: string;
+          room_id: string;
+          game_type: GameType;
+          status: string;
+          state: Json;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          room_id: string;
+          game_type: GameType;
+          status?: string;
+          state?: Json;
+          created_by?: string | null;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["game_sessions"]["Insert"] & { updated_at: string }
+        >;
+        Relationships: [
+          {
+            foreignKeyName: "game_sessions_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_sessions_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      game_players: {
+        Row: {
+          id: string;
+          session_id: string;
+          profile_id: string;
+          is_spectator: boolean;
+          is_ready: boolean;
+          score: number;
+          connected: boolean;
+          joined_at: string;
+        };
+        Insert: {
+          id?: string;
+          session_id: string;
+          profile_id: string;
+          is_spectator?: boolean;
+          is_ready?: boolean;
+          score?: number;
+          connected?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["game_players"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "game_players_session_id_fkey";
+            columns: ["session_id"];
+            isOneToOne: false;
+            referencedRelation: "game_sessions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_players_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      game_events: {
+        Row: {
+          id: string;
+          session_id: string;
+          profile_id: string | null;
+          event_type: string;
+          payload: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          session_id: string;
+          profile_id?: string | null;
+          event_type: string;
+          payload?: Json;
+        };
+        Update: Partial<Database["public"]["Tables"]["game_events"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "game_events_session_id_fkey";
+            columns: ["session_id"];
+            isOneToOne: false;
+            referencedRelation: "game_sessions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_events_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      game_round_secrets: {
+        Row: {
+          session_id: string;
+          secret: Json;
+          updated_at: string;
+        };
+        Insert: {
+          session_id: string;
+          secret: Json;
+        };
+        Update: Partial<Database["public"]["Tables"]["game_round_secrets"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "game_round_secrets_session_id_fkey";
+            columns: ["session_id"];
+            isOneToOne: true;
+            referencedRelation: "game_sessions";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -727,6 +860,10 @@ export interface Database {
       };
       clear_drawing_layer: {
         Args: { p_room_id: string };
+        Returns: undefined;
+      };
+      increment_game_score: {
+        Args: { p_session_id: string; p_profile_id: string; p_delta: number };
         Returns: undefined;
       };
     };

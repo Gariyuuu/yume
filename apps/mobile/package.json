@@ -9,6 +9,7 @@
     "@livekit/react-native-webrtc": "^144.1.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@supabase/supabase-js": "^2.45.4",
+    "@yume/game-sdk": "workspace:*",
     "@yume/room-schema": "workspace:*",
     "@yume/supabase-types": "workspace:*",
     "expo": "~57.0.9",

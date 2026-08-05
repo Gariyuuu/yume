@@ -1,12 +1,19 @@
 "use client";
 
 import type { PresenceStatus } from "@yume/room-schema";
-import { useConnectionState, useMediaDeviceSelect, useTrackToggle } from "@livekit/components-react";
+import {
+  useConnectionState,
+  useLocalParticipant,
+  useMediaDeviceSelect,
+  useTrackToggle
+} from "@livekit/components-react";
 import { ConnectionState, Track } from "livekit-client";
-import { Mic, MicOff, Monitor, MonitorOff, PhoneOff, Video, VideoOff } from "lucide-react";
-import { useTransition } from "react";
-import { Button } from "@/components/ui/button";
+import { Mic, MicOff, Monitor, MonitorOff, PhoneOff, Sparkles, Video, VideoOff } from "lucide-react";
+import { useRef, useState, useTransition } from "react";
 import { updateOwnStatusAction, updateRoomAudioModeAction } from "@/app/room/[roomId]/actions";
+import { CameraEffectsPanel } from "@/components/camera-effects/camera-effects-panel";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useCallJoin } from "./room-call-provider";
 
 const STATUS_OPTIONS: PresenceStatus[] = ["online", "away", "busy", "studying"];
@@ -33,9 +40,41 @@ function DeviceSelect({ kind }: { kind: "audioinput" | "videoinput" }) {
 
 function InCallControls() {
   const { setJoined } = useCallJoin();
+  const { localParticipant } = useLocalParticipant();
   const mic = useTrackToggle({ source: Track.Source.Microphone });
   const camera = useTrackToggle({ source: Track.Source.Camera });
   const screenShare = useTrackToggle({ source: Track.Source.ScreenShare });
+  const [effectsOpen, setEffectsOpen] = useState(false);
+  const [effectsLive, setEffectsLive] = useState(false);
+  const cameraWasOnRef = useRef(false);
+
+  /** Swaps the published camera track for the effects pipeline's
+   *  processed canvas stream (or back to the plain camera) — see
+   *  components/camera-effects/use-camera-pipeline.ts. Unverified beyond
+   *  typecheck: no LiveKit project to actually join a call against in
+   *  this environment (same standing caveat as the rest of Phase 3-6's
+   *  LiveKit work). */
+  async function handlePublishEffects(stream: MediaStream | null) {
+    if (stream) {
+      cameraWasOnRef.current = camera.enabled;
+      if (camera.enabled) await camera.toggle(false);
+      const videoTrack = stream.getVideoTracks()[0];
+      if (videoTrack) {
+        await localParticipant.publishTrack(videoTrack, {
+          source: Track.Source.Camera,
+          name: "effects-camera"
+        });
+      }
+      setEffectsLive(true);
+    } else {
+      const publication = localParticipant.getTrackPublication(Track.Source.Camera);
+      if (publication?.track) {
+        await localParticipant.unpublishTrack(publication.track.mediaStreamTrack!, true);
+      }
+      setEffectsLive(false);
+      if (cameraWasOnRef.current) await camera.toggle(true);
+    }
+  }
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -46,12 +85,25 @@ function InCallControls() {
 
       <Button
         size="icon"
-        variant={camera.enabled ? "default" : "outline"}
+        variant={camera.enabled || effectsLive ? "default" : "outline"}
         onClick={() => camera.toggle()}
+        disabled={effectsLive}
       >
-        {camera.enabled ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
+        {camera.enabled || effectsLive ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
       </Button>
       <DeviceSelect kind="videoinput" />
+
+      <Dialog open={effectsOpen} onOpenChange={setEffectsOpen}>
+        <DialogTrigger render={<Button size="icon" variant={effectsLive ? "default" : "outline"} title="Camera effects" />}>
+          <Sparkles className="h-4 w-4" />
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Camera effects</DialogTitle>
+          </DialogHeader>
+          <CameraEffectsPanel onPublish={handlePublishEffects} />
+        </DialogContent>
+      </Dialog>
 
       <Button
         size="icon"
