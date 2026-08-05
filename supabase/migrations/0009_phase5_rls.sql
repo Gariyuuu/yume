@@ -1,19 +1,11 @@
 -- RLS for the Phase 5 tables (room chat, media sync, timers, study mode).
 -- Same room_role() pattern as every prior phase's room-scoped tables.
 
-alter table room_messages enable row level security;
-
-create policy "room members can read messages"
-on room_messages for select
-using (room_role(room_id, auth.uid()) is not null);
-
-create policy "room members can send messages"
-on room_messages for insert
-with check (room_role(room_id, auth.uid()) is not null and author_id = auth.uid());
-
-create policy "author or moderator can soft-delete messages"
-on room_messages for update
-using (author_id = auth.uid() or room_role(room_id, auth.uid()) in ('owner', 'moderator'));
+-- room_messages already got its full RLS (select/insert/soft-delete
+-- update) in 0002_rls.sql — this block used to redeclare it, which
+-- fails against a real database (a same-named policy can't be created
+-- twice). Only surfaced now that these migrations have actually run
+-- against real Postgres for the first time.
 
 alter table message_reactions enable row level security;
 
