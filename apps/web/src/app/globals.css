@@ -10,6 +10,19 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  --color-brand-50: #faf5ff;
+  --color-brand-100: #f3e8ff;
+  --color-brand-200: #e9d5ff;
+  --color-brand-300: #d8b4fe;
+  --color-brand-400: #c084fc;
+  --color-brand-500: #a855f7;
+  --color-brand-600: #9333ea;
+  --color-brand-700: #7e22ce;
+  --color-brand-800: #6b1988;
+  --color-brand-900: #4c1d76;
+  --color-room-bg: var(--room-bg);
+  --radius-card: 1.375rem;
+  --radius-bubble: 9999px;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,73 +61,81 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * "Your Name" (Kimi no Na wa) inspired palette: deep twilight
+ * indigo-violet night sky, warm gold comet/starlight accents, soft
+ * magenta highlights. Used as the one default look (no light/dark
+ * toggle exists — see Starfield component for the animated sky).
+ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --background: #130c28;
+  --foreground: #f3ecff;
+  --card: #1e1440;
+  --card-foreground: #f3ecff;
+  --popover: #1e1440;
+  --popover-foreground: #f3ecff;
+  --primary: #a855f7;
+  --primary-foreground: #150f2b;
+  --secondary: #2c2154;
+  --secondary-foreground: #f3ecff;
+  --muted: #241a44;
+  --muted-foreground: #b6a6dd;
+  --accent: #372a5f;
+  --accent-foreground: #f3ecff;
+  --destructive: #f4677d;
+  --border: #3a2d63;
+  --input: #3a2d63;
+  --ring: #a855f7;
+  --chart-1: #c084fc;
+  --chart-2: #fbd066;
+  --chart-3: #f0b7c4;
+  --chart-4: #7dd3fc;
+  --chart-5: #86efac;
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #1e1440;
+  --sidebar-foreground: #f3ecff;
+  --sidebar-primary: #a855f7;
+  --sidebar-primary-foreground: #150f2b;
+  --sidebar-accent: #372a5f;
+  --sidebar-accent-foreground: #f3ecff;
+  --sidebar-border: #3a2d63;
+  --sidebar-ring: #a855f7;
+  --room-bg: #201639;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #130c28;
+  --foreground: #f3ecff;
+  --card: #1e1440;
+  --card-foreground: #f3ecff;
+  --popover: #1e1440;
+  --popover-foreground: #f3ecff;
+  --primary: #a855f7;
+  --primary-foreground: #150f2b;
+  --secondary: #2c2154;
+  --secondary-foreground: #f3ecff;
+  --muted: #241a44;
+  --muted-foreground: #b6a6dd;
+  --accent: #372a5f;
+  --accent-foreground: #f3ecff;
+  --destructive: #f4677d;
+  --border: #3a2d63;
+  --input: #3a2d63;
+  --ring: #a855f7;
+  --chart-1: #c084fc;
+  --chart-2: #fbd066;
+  --chart-3: #f0b7c4;
+  --chart-4: #7dd3fc;
+  --chart-5: #86efac;
+  --sidebar: #1e1440;
+  --sidebar-foreground: #f3ecff;
+  --sidebar-primary: #a855f7;
+  --sidebar-primary-foreground: #150f2b;
+  --sidebar-accent: #372a5f;
+  --sidebar-accent-foreground: #f3ecff;
+  --sidebar-border: #3a2d63;
+  --sidebar-ring: #a855f7;
+  --room-bg: #201639;
 }
 
 @layer base {
@@ -123,8 +144,79 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(ellipse 90% 55% at 50% 115%, rgba(216, 180, 254, 0.16), transparent 70%),
+      radial-gradient(1.6px 1.6px at 8% 22%, #ffffff, transparent),
+      radial-gradient(1.2px 1.2px at 18% 68%, #ffffff, transparent),
+      radial-gradient(1.8px 1.8px at 32% 14%, #f3ecff, transparent),
+      radial-gradient(1.2px 1.2px at 46% 82%, #ffffff, transparent),
+      radial-gradient(1.6px 1.6px at 61% 38%, #ffffff, transparent),
+      radial-gradient(1.2px 1.2px at 74% 66%, #f3ecff, transparent),
+      radial-gradient(2px 2px at 85% 20%, #ffffff, transparent),
+      radial-gradient(1.2px 1.2px at 93% 55%, #ffffff, transparent),
+      radial-gradient(1.6px 1.6px at 12% 90%, #ffffff, transparent),
+      radial-gradient(1.2px 1.2px at 55% 6%, #ffffff, transparent),
+      linear-gradient(185deg, #0d0920 0%, #150f2b 40%, #241a44 75%, #2f2159 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    min-height: 100vh;
   }
   html {
     @apply font-sans;
   }
+}
+
+/* Shooting stars — see components/starfield.tsx, mounted once in the
+ * root layout as a fixed full-viewport overlay behind all page content.
+ * "Your Name" comet-across-the-sky vibe, kept as lightweight CSS
+ * animations rather than canvas/JS since it's purely decorative. */
+@keyframes shooting-star {
+  0% {
+    transform: translate(0, 0) rotate(215deg);
+    opacity: 0;
+    width: 0;
+  }
+  4% {
+    opacity: 1;
+    width: 2px;
+  }
+  16% {
+    width: 90px;
+  }
+  20% {
+    transform: translate(-420px, 320px) rotate(215deg);
+    opacity: 0;
+    width: 0;
+  }
+  100% {
+    transform: translate(-420px, 320px) rotate(215deg);
+    opacity: 0;
+    width: 0;
+  }
+}
+
+@keyframes star-twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.shooting-star {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(90deg, #ffffff, #d8b4fe 60%, transparent);
+  border-radius: 999px;
+  filter: drop-shadow(0 0 4px #f3ecff);
+  animation-name: shooting-star;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+.star-twinkle {
+  animation: star-twinkle ease-in-out infinite;
 }
