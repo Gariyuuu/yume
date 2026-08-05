@@ -1,10 +1,10 @@
 /**
- * Hand-written Supabase Database type, scoped to the tables Phase 2 code
- * actually touches (profiles, room_templates, rooms, room_memberships,
- * room_invites, room_objects). Once a live Supabase project exists, run
- * `pnpm --filter @yume/supabase-types gen` to replace this with a fully
- * generated file covering every table in supabase/migrations — do that
- * before Phase 3 rather than hand-extending this further.
+ * Hand-written Supabase Database type, scoped to the tables the app code
+ * actually touches so far (still no live Supabase project to run
+ * `supabase gen types` against — see docs/phase-1/11-implementation-checklist.md).
+ * Once a live project exists, run `pnpm --filter @yume/supabase-types gen`
+ * to replace this with a fully generated file covering every table in
+ * supabase/migrations, instead of continuing to hand-extend it.
  *
  * `Relationships` arrays below must stay in sync with the foreign keys
  * declared in supabase/migrations — they're what let supabase-js type
@@ -257,6 +257,163 @@ export interface Database {
             columns: ["owner_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      room_versions: {
+        Row: {
+          id: string;
+          room_id: string;
+          snapshot: Json;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          room_id: string;
+          snapshot: Json;
+          created_by?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["room_versions"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "room_versions_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "room_versions_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      asset_licenses: {
+        Row: {
+          id: string;
+          source_url: string;
+          creator: string;
+          license: string;
+          downloaded_at: string;
+          attribution_required: boolean;
+          attribution_text: string | null;
+          modification_notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          source_url: string;
+          creator: string;
+          license: string;
+          downloaded_at: string;
+          attribution_required?: boolean;
+          attribution_text?: string | null;
+          modification_notes?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["asset_licenses"]["Insert"]>;
+        Relationships: [];
+      };
+      room_assets: {
+        Row: {
+          id: string;
+          name: string;
+          category: string;
+          asset_url: string;
+          thumbnail_url: string | null;
+          license_id: string | null;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          category: string;
+          asset_url: string;
+          thumbnail_url?: string | null;
+          license_id?: string | null;
+          is_active?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["room_assets"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "room_assets_license_id_fkey";
+            columns: ["license_id"];
+            isOneToOne: false;
+            referencedRelation: "asset_licenses";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      room_notes: {
+        Row: {
+          id: string;
+          room_id: string;
+          type: string;
+          content: Json;
+          color: string | null;
+          pinned: boolean;
+          locked: boolean;
+          edit_mode: string;
+          owner_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          room_id: string;
+          type?: string;
+          content?: Json;
+          color?: string | null;
+          pinned?: boolean;
+          locked?: boolean;
+          edit_mode?: string;
+          owner_id?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["room_notes"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "room_notes_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "room_notes_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      room_drawings: {
+        Row: {
+          id: string;
+          room_id: string;
+          layer_locked: boolean;
+          strokes: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          room_id: string;
+          layer_locked?: boolean;
+          strokes?: Json;
+        };
+        Update: Partial<Database["public"]["Tables"]["room_drawings"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "room_drawings_room_id_fkey";
+            columns: ["room_id"];
+            isOneToOne: false;
+            referencedRelation: "rooms";
             referencedColumns: ["id"];
           }
         ];
