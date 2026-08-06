@@ -9,6 +9,9 @@ export type YouTubePlayer = {
   getPlayerState: () => number;
   loadVideoById: (videoId: string) => void;
   destroy: () => void;
+  mute: () => void;
+  unMute: () => void;
+  isMuted: () => boolean;
 };
 
 export const YT_PLAYER_STATE = {
@@ -26,6 +29,7 @@ declare global {
         element: HTMLElement | string,
         options: {
           videoId?: string;
+          playerVars?: { mute?: 0 | 1; autoplay?: 0 | 1; playsinline?: 0 | 1 };
           events?: {
             onReady?: (event: { target: YouTubePlayer }) => void;
             onStateChange?: (event: { data: number; target: YouTubePlayer }) => void;
