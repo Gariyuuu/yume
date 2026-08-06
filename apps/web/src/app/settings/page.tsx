@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { AppNav } from "@/components/app-nav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { requireProfile } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import { BackgroundUpload } from "./background-upload";
 import { BlockedUsersList } from "./blocked-users";
 import { DangerZone } from "./danger-zone";
 import { ProfileForm } from "./profile-form";
@@ -19,8 +21,10 @@ export default async function SettingsPage() {
     .map((b) => ({ id: b.blocked_id, display_name: b.profiles!.display_name }));
 
   return (
-    <div className="mx-auto flex max-w-xl flex-col gap-6 px-4 py-10">
-      <h1 className="text-2xl font-semibold">Settings</h1>
+    <div className="flex min-h-screen flex-col">
+      <AppNav current="settings" />
+      <div className="mx-auto flex w-full max-w-xl flex-col gap-6 px-4 py-10">
+        <h1 className="text-2xl font-semibold">Settings</h1>
 
       <Card className="rounded-card">
         <CardHeader>
@@ -28,6 +32,15 @@ export default async function SettingsPage() {
         </CardHeader>
         <CardContent>
           <ProfileForm displayName={profile.display_name} avatarUrl={profile.avatar_url} />
+        </CardContent>
+      </Card>
+
+      <Card className="rounded-card">
+        <CardHeader>
+          <CardTitle>Appearance</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <BackgroundUpload profileId={profile.id} currentUrl={profile.background_url} />
         </CardContent>
       </Card>
 
@@ -66,22 +79,26 @@ export default async function SettingsPage() {
           <Link href="/terms" className="underline underline-offset-4">
             Terms of service
           </Link>
+          <Link href="/changelog" className="underline underline-offset-4">
+            Changelog
+          </Link>
           <a href="mailto:support@yume.app" className="underline underline-offset-4">
             Contact support
           </a>
         </CardContent>
       </Card>
 
-      <Separator />
+        <Separator />
 
-      <Card className="rounded-card border-destructive/30">
-        <CardHeader>
-          <CardTitle className="text-destructive">Danger zone</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <DangerZone />
-        </CardContent>
-      </Card>
+        <Card className="rounded-card border-destructive/30">
+          <CardHeader>
+            <CardTitle className="text-destructive">Danger zone</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DangerZone />
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

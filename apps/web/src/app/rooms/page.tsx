@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AppNav } from "@/components/app-nav";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireProfile } from "@/lib/auth/session";
@@ -23,11 +24,13 @@ export default async function RoomsPage() {
   ]);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Your rooms</h1>
-        <CreateRoomForm templates={templates ?? []} />
-      </div>
+    <div className="flex min-h-screen flex-col">
+      <AppNav current="rooms" />
+      <div className="mx-auto w-full max-w-3xl px-4 py-10">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-semibold">Your rooms</h1>
+          <CreateRoomForm templates={templates ?? []} />
+        </div>
 
       {memberships && memberships.length > 0 ? (
         <div className="grid gap-3 sm:grid-cols-2">
@@ -51,11 +54,12 @@ export default async function RoomsPage() {
             );
           })}
         </div>
-      ) : (
-        <p className="text-muted-foreground">
-          No rooms yet — create one to invite your friends.
-        </p>
-      )}
+        ) : (
+          <p className="text-muted-foreground">
+            No rooms yet — create one to invite your friends.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

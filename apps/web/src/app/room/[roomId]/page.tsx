@@ -1,8 +1,7 @@
 import type { RoomAsset, RoomObject } from "@yume/room-schema";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { AppNav } from "@/components/app-nav";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { ChatPanel } from "@/components/chat/chat-panel";
 import { RoomHistoryDialog } from "@/components/decoration/room-history-dialog";
 import { RoomTemplatesDialog } from "@/components/decoration/room-templates-dialog";
@@ -43,11 +42,9 @@ export default async function RoomPage({ params }: PageProps<"/room/[roomId]">) 
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="flex flex-wrap items-center justify-between gap-2 border-b px-6 py-4">
+      <AppNav current="room" />
+      <header className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-6 py-4">
         <div className="flex items-center gap-3">
-          <Link href="/rooms" className="text-sm text-muted-foreground underline underline-offset-4">
-            ← Rooms
-          </Link>
           <h1 className="text-xl font-semibold">{room.name}</h1>
           <Badge variant="secondary" className="capitalize">
             {membership.role}
@@ -63,9 +60,6 @@ export default async function RoomPage({ params }: PageProps<"/room/[roomId]">) 
           {canManageAll ? <RoomHistoryDialog roomId={room.id} /> : null}
           {canManageAll ? <InviteDialog roomId={room.id} /> : null}
           {canManageAll ? <SafetyDialog roomId={room.id} isLocked={room.is_locked} /> : null}
-          <Link href="/settings">
-            <Button variant="ghost">Settings</Button>
-          </Link>
         </div>
       </header>
 

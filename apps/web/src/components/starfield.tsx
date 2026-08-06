@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+
 const SHOOTING_STARS = [
   { top: "8%", left: "78%", duration: "5.5s", delay: "0s" },
   { top: "18%", left: "92%", duration: "6.5s", delay: "2.2s" },
@@ -14,14 +19,48 @@ const TWINKLE_STARS = [
 ];
 
 /**
- * Purely decorative, fixed full-viewport night sky mounted once behind
- * everything in the root layout — see globals.css for the static
- * starfield background and the shooting-star/twinkle keyframes this
- * renders instances of.
+ * Fixed full-viewport night sky mounted once behind everything in the
+ * root layout. Default look is the static nebula SVG (set on <body> in
+ * globals.css) plus these animated shooting-star/twinkle overlays. If
+ * the signed-in user has uploaded a custom background (Settings ->
+ * Appearance -> background-upload.tsx), that image replaces the nebula
+ * here — stars still twinkle/shoot on top of it either way.
  */
 export function Starfield() {
+  const [customUrl, setCustomUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const supabase = createClient();
+
+    void supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user || cancelled) return;
+      void supabase
+        .from("profiles")
+        .select("background_url")
+        .eq("id", user.id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (!cancelled) setCustomUrl(data?.background_url ?? null);
+        });
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      {customUrl ? (
+        <>
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${customUrl})` }}
+          />
+          <div className="absolute inset-0 bg-background/55" />
+        </>
+      ) : null}
       {SHOOTING_STARS.map((star, index) => (
         <span
           key={index}

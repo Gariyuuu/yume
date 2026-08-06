@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="magentaGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e935e0" stop-opacity="0.55" />
+      <stop offset="60%" stop-color="#a020c0" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#e935e0" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="cyanGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22e5ff" stop-opacity="0.45" />
+      <stop offset="60%" stop-color="#0ea5c4" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#22e5ff" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="violetGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.4" />
+      <stop offset="60%" stop-color="#7e22ce" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="baseGradient" cx="50%" cy="20%" r="90%">
+      <stop offset="0%" stop-color="#1a0d33" />
+      <stop offset="45%" stop-color="#0f0820" />
+      <stop offset="100%" stop-color="#05030c" />
+    </radialGradient>
+    <filter id="softBlur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="60" />
+    </filter>
+    <filter id="starGlow" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur stdDeviation="1.4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#baseGradient)" />
+
+  <g filter="url(#softBlur)">
+    <ellipse cx="1180" cy="180" rx="420" ry="300" fill="url(#magentaGlow)" />
+    <ellipse cx="260" cy="720" rx="480" ry="340" fill="url(#cyanGlow)" />
+    <ellipse cx="820" cy="560" rx="500" ry="360" fill="url(#violetGlow)" />
+    <ellipse cx="1450" cy="820" rx="320" ry="240" fill="url(#magentaGlow)" />
+    <ellipse cx="90" cy="120" rx="300" ry="220" fill="url(#violetGlow)" />
+  </g>
+
+  <!-- scattered stars -->
+  <g fill="#ffffff">
+    <circle cx="42" cy="63" r="1.1" /><circle cx="118" cy="211" r="1.4" /><circle cx="204" cy="47" r="1" />
+    <circle cx="289" cy="332" r="1.3" /><circle cx="356" cy="150" r="1" /><circle cx="411" cy="401" r="1.5" />
+    <circle cx="478" cy="89" r="1.1" /><circle cx="522" cy="277" r="1" /><circle cx="601" cy="180" r="1.4" />
+    <circle cx="667" cy="55" r="1" /><circle cx="712" cy="368" r="1.2" /><circle cx="789" cy="122" r="1" />
+    <circle cx="845" cy="290" r="1.5" /><circle cx="902" cy="41" r="1" /><circle cx="968" cy="215" r="1.3" />
+    <circle cx="1023" cy="380" r="1" /><circle cx="1089" cy="98" r="1.4" /><circle cx="1145" cy="260" r="1" />
+    <circle cx="1211" cy="35" r="1.2" /><circle cx="1278" cy="190" r="1" /><circle cx="1334" cy="340" r="1.5" />
+    <circle cx="1401" cy="72" r="1" /><circle cx="1467" cy="250" r="1.3" /><circle cx="1523" cy="110" r="1" />
+    <circle cx="1568" cy="310" r="1.2" /><circle cx="78" cy="480" r="1" /><circle cx="145" cy="610" r="1.4" />
+    <circle cx="213" cy="540" r="1" /><circle cx="298" cy="690" r="1.3" /><circle cx="367" cy="560" r="1" />
+    <circle cx="433" cy="720" r="1.5" /><circle cx="499" cy="610" r="1" /><circle cx="556" cy="480" r="1.2" />
+    <circle cx="623" cy="650" r="1" /><circle cx="689" cy="530" r="1.4" /><circle cx="745" cy="700" r="1" />
+    <circle cx="812" cy="470" r="1.3" /><circle cx="878" cy="640" r="1" /><circle cx="934" cy="560" r="1.5" />
+    <circle cx="1001" cy="710" r="1" /><circle cx="1067" cy="500" r="1.2" /><circle cx="1123" cy="660" r="1" />
+    <circle cx="1189" cy="590" r="1.4" /><circle cx="1256" cy="740" r="1" /><circle cx="1312" cy="520" r="1.3" />
+    <circle cx="1378" cy="680" r="1" /><circle cx="1434" cy="600" r="1.5" /><circle cx="1501" cy="750" r="1" />
+    <circle cx="1557" cy="540" r="1.2" /><circle cx="55" cy="850" r="1" /><circle cx="132" cy="920" r="1.4" />
+    <circle cx="220" cy="870" r="1" /><circle cx="305" cy="960" r="1.3" /><circle cx="381" cy="890" r="1" />
+    <circle cx="456" cy="940" r="1.5" /><circle cx="533" cy="860" r="1" /><circle cx="609" cy="910" r="1.2" />
+    <circle cx="676" cy="960" r="1" /><circle cx="742" cy="880" r="1.4" /><circle cx="819" cy="930" r="1" />
+    <circle cx="885" cy="870" r="1.3" /><circle cx="951" cy="950" r="1" /><circle cx="1018" cy="890" r="1.5" />
+    <circle cx="1084" cy="940" r="1" /><circle cx="1150" cy="870" r="1.2" /><circle cx="1217" cy="920" r="1" />
+    <circle cx="1283" cy="880" r="1.4" /><circle cx="1350" cy="950" r="1" /><circle cx="1416" cy="900" r="1.3" />
+    <circle cx="1482" cy="870" r="1" /><circle cx="1548" cy="930" r="1.5" />
+  </g>
+
+  <!-- a handful of brighter glowing stars -->
+  <g filter="url(#starGlow)" fill="#ffffff">
+    <circle cx="240" cy="160" r="1.8" />
+    <circle cx="980" cy="90" r="2" />
+    <circle cx="1340" cy="440" r="1.6" />
+    <circle cx="620" cy="820" r="1.8" />
+    <circle cx="1500" cy="650" r="1.6" />
+    <circle cx="90" cy="560" r="1.8" />
+    <circle cx="760" cy="260" r="2" />
+  </g>
+</svg>

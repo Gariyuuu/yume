@@ -52,6 +52,7 @@ export interface Database {
           custom_avatar: Json | null;
           status: PresenceStatus;
           is_guest: boolean;
+          background_url: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -62,6 +63,7 @@ export interface Database {
           custom_avatar?: Json | null;
           status?: PresenceStatus;
           is_guest?: boolean;
+          background_url?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
         Relationships: [];

@@ -62,80 +62,88 @@
 }
 
 /*
- * "Your Name" (Kimi no Na wa) inspired palette: deep twilight
- * indigo-violet night sky, warm gold comet/starlight accents, soft
- * magenta highlights. Used as the one default look (no light/dark
- * toggle exists — see Starfield component for the animated sky).
+ * Neon night palette: near-black base so glowing magenta/cyan borders
+ * and text actually read as "neon" instead of washing out — a plain
+ * mid-tone indigo (the previous version) can't do that, glow only
+ * pops against real darkness. Used as the one default look (no
+ * light/dark toggle exists — see Starfield/public/nebula-bg.svg for
+ * the background image).
  */
 :root {
-  --background: #130c28;
-  --foreground: #f3ecff;
-  --card: #1e1440;
-  --card-foreground: #f3ecff;
-  --popover: #1e1440;
-  --popover-foreground: #f3ecff;
-  --primary: #a855f7;
-  --primary-foreground: #150f2b;
-  --secondary: #2c2154;
-  --secondary-foreground: #f3ecff;
-  --muted: #241a44;
-  --muted-foreground: #b6a6dd;
-  --accent: #372a5f;
-  --accent-foreground: #f3ecff;
-  --destructive: #f4677d;
-  --border: #3a2d63;
-  --input: #3a2d63;
-  --ring: #a855f7;
-  --chart-1: #c084fc;
-  --chart-2: #fbd066;
-  --chart-3: #f0b7c4;
+  --background: #07040f;
+  --foreground: #f5f0ff;
+  --card: #150a26;
+  --card-foreground: #f5f0ff;
+  --popover: #150a26;
+  --popover-foreground: #f5f0ff;
+  --primary: #e935e0;
+  --primary-foreground: #0a0414;
+  --secondary: #1c0f38;
+  --secondary-foreground: #f5f0ff;
+  --muted: #1a0f30;
+  --muted-foreground: #b79ce0;
+  --accent: #2a1650;
+  --accent-foreground: #f5f0ff;
+  --destructive: #ff4d7e;
+  --border: #3d2568;
+  --input: #3a2160;
+  --ring: #22e5ff;
+  --chart-1: #e935e0;
+  --chart-2: #22e5ff;
+  --chart-3: #fbd066;
   --chart-4: #7dd3fc;
   --chart-5: #86efac;
   --radius: 0.625rem;
-  --sidebar: #1e1440;
-  --sidebar-foreground: #f3ecff;
-  --sidebar-primary: #a855f7;
-  --sidebar-primary-foreground: #150f2b;
-  --sidebar-accent: #372a5f;
-  --sidebar-accent-foreground: #f3ecff;
-  --sidebar-border: #3a2d63;
-  --sidebar-ring: #a855f7;
-  --room-bg: #201639;
+  --sidebar: #150a26;
+  --sidebar-foreground: #f5f0ff;
+  --sidebar-primary: #e935e0;
+  --sidebar-primary-foreground: #0a0414;
+  --sidebar-accent: #2a1650;
+  --sidebar-accent-foreground: #f5f0ff;
+  --sidebar-border: #3d2568;
+  --sidebar-ring: #22e5ff;
+  --room-bg: #120a24;
+  --neon-magenta: #e935e0;
+  --neon-cyan: #22e5ff;
+  --neon-violet: #a855f7;
 }
 
 .dark {
-  --background: #130c28;
-  --foreground: #f3ecff;
-  --card: #1e1440;
-  --card-foreground: #f3ecff;
-  --popover: #1e1440;
-  --popover-foreground: #f3ecff;
-  --primary: #a855f7;
-  --primary-foreground: #150f2b;
-  --secondary: #2c2154;
-  --secondary-foreground: #f3ecff;
-  --muted: #241a44;
-  --muted-foreground: #b6a6dd;
-  --accent: #372a5f;
-  --accent-foreground: #f3ecff;
-  --destructive: #f4677d;
-  --border: #3a2d63;
-  --input: #3a2d63;
-  --ring: #a855f7;
-  --chart-1: #c084fc;
-  --chart-2: #fbd066;
-  --chart-3: #f0b7c4;
+  --background: #07040f;
+  --foreground: #f5f0ff;
+  --card: #150a26;
+  --card-foreground: #f5f0ff;
+  --popover: #150a26;
+  --popover-foreground: #f5f0ff;
+  --primary: #e935e0;
+  --primary-foreground: #0a0414;
+  --secondary: #1c0f38;
+  --secondary-foreground: #f5f0ff;
+  --muted: #1a0f30;
+  --muted-foreground: #b79ce0;
+  --accent: #2a1650;
+  --accent-foreground: #f5f0ff;
+  --destructive: #ff4d7e;
+  --border: #3d2568;
+  --input: #3a2160;
+  --ring: #22e5ff;
+  --chart-1: #e935e0;
+  --chart-2: #22e5ff;
+  --chart-3: #fbd066;
   --chart-4: #7dd3fc;
   --chart-5: #86efac;
-  --sidebar: #1e1440;
-  --sidebar-foreground: #f3ecff;
-  --sidebar-primary: #a855f7;
-  --sidebar-primary-foreground: #150f2b;
-  --sidebar-accent: #372a5f;
-  --sidebar-accent-foreground: #f3ecff;
-  --sidebar-border: #3a2d63;
-  --sidebar-ring: #a855f7;
-  --room-bg: #201639;
+  --sidebar: #150a26;
+  --sidebar-foreground: #f5f0ff;
+  --sidebar-primary: #e935e0;
+  --sidebar-primary-foreground: #0a0414;
+  --sidebar-accent: #2a1650;
+  --sidebar-accent-foreground: #f5f0ff;
+  --sidebar-border: #3d2568;
+  --sidebar-ring: #22e5ff;
+  --room-bg: #120a24;
+  --neon-magenta: #e935e0;
+  --neon-cyan: #22e5ff;
+  --neon-violet: #a855f7;
 }
 
 @layer base {
@@ -144,22 +152,16 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image:
-      radial-gradient(ellipse 90% 55% at 50% 115%, rgba(216, 180, 254, 0.16), transparent 70%),
-      radial-gradient(1.6px 1.6px at 8% 22%, #ffffff, transparent),
-      radial-gradient(1.2px 1.2px at 18% 68%, #ffffff, transparent),
-      radial-gradient(1.8px 1.8px at 32% 14%, #f3ecff, transparent),
-      radial-gradient(1.2px 1.2px at 46% 82%, #ffffff, transparent),
-      radial-gradient(1.6px 1.6px at 61% 38%, #ffffff, transparent),
-      radial-gradient(1.2px 1.2px at 74% 66%, #f3ecff, transparent),
-      radial-gradient(2px 2px at 85% 20%, #ffffff, transparent),
-      radial-gradient(1.2px 1.2px at 93% 55%, #ffffff, transparent),
-      radial-gradient(1.6px 1.6px at 12% 90%, #ffffff, transparent),
-      radial-gradient(1.2px 1.2px at 55% 6%, #ffffff, transparent),
-      linear-gradient(185deg, #0d0920 0%, #150f2b 40%, #241a44 75%, #2f2159 100%);
+    /* Real image file (public/nebula-bg.svg — hand-authored, since no
+     * image-generation tool is available in this environment; SVG
+     * renders crisper than a fixed-resolution PNG would at any screen
+     * size anyway). Overridden per-user by Starfield when they've
+     * uploaded a custom background — see components/starfield.tsx. */
+    background-image: url("/nebula-bg.svg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
+    background-position: center;
     min-height: 100vh;
   }
   html {
@@ -219,4 +221,50 @@
 
 .star-twinkle {
   animation: star-twinkle ease-in-out infinite;
+}
+
+/* Neon glow accents — applied selectively (nav brand, cards, primary
+ * buttons) rather than on every border in the app, so it reads as
+ * "neon highlights in a dark room" instead of everything glowing at
+ * once. */
+.neon-text-brand {
+  color: #ffffff;
+  text-shadow:
+    0 0 6px var(--neon-magenta),
+    0 0 16px var(--neon-magenta),
+    0 0 32px color-mix(in srgb, var(--neon-magenta) 60%, transparent);
+}
+
+.rounded-card {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--neon-magenta) 35%, transparent),
+    0 0 20px color-mix(in srgb, var(--neon-magenta) 12%, transparent),
+    0 8px 24px rgba(0, 0, 0, 0.45);
+  transition: box-shadow 150ms ease;
+}
+
+.rounded-card:hover {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--neon-magenta) 65%, transparent),
+    0 0 28px color-mix(in srgb, var(--neon-magenta) 25%, transparent),
+    0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+[data-slot="dialog-content"],
+[data-slot="popover-content"] {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--neon-cyan) 30%, transparent),
+    0 0 40px color-mix(in srgb, var(--neon-magenta) 18%, transparent),
+    0 20px 60px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-slot="button"].bg-primary {
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--neon-magenta) 55%, transparent),
+    0 0 24px color-mix(in srgb, var(--neon-magenta) 25%, transparent);
+}
+[data-slot="button"].bg-primary:hover {
+  box-shadow:
+    0 0 16px color-mix(in srgb, var(--neon-magenta) 75%, transparent),
+    0 0 36px color-mix(in srgb, var(--neon-magenta) 40%, transparent);
 }

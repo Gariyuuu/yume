@@ -8,6 +8,7 @@ export const profileSchema = z.object({
   custom_avatar: z.record(z.unknown()).nullable(),
   status: presenceStatusSchema,
   is_guest: z.boolean(),
+  background_url: z.string().url().nullable(),
   created_at: z.string(),
   updated_at: z.string()
 });
