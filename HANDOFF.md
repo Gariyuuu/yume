@@ -16,11 +16,11 @@ In this order:
 
 ## What is the current task?
 
-None in progress — the repository was clean and fully committed when this handoff was prepared. The highest-priority next task is `TASKS.md`'s `SEC-001` (see below).
+None in progress — the repository is clean (`git status` empty) as of the 2026-08-07 checkpoint. The highest-priority next task is `TASKS.md`'s `SEC-001` (see below).
 
 ## What was the previous agent doing?
 
-The immediately prior work was a live-testing hardening pass that found and fixed 4 real bugs (all documented in detail in `DECISIONS.md` ADR-005 through ADR-008), followed by this documentation audit itself — creating the memory system you're reading now. No code changes were made during the documentation audit beyond (a) confirming `README.md` was stale and rewriting it, and (b) a read-only live database query that discovered the `SEC-001` gap.
+The most recent session (2026-08-07) was a "final transfer checkpoint": committed one pending working-tree change (a regenerated `favicon.ico`, `2163b0d`), re-ran typecheck/lint/build (clean), reconfirmed the live Vercel deployment and its real (encrypted) env vars, scanned for secrets (none found), and fixed a real staleness bug where `PROJECT_STATE.md`/`TASKS.md`/`CHANGELOG.md` still described the 17-file doc system as uncommitted after it had actually been committed (`b0e446c`). See `SESSION_LOG.md`'s 2026-08-07 entry for full detail. Before that: the documentation audit itself (creating this memory system), and before that, a live-testing hardening pass that found and fixed 4 real bugs (documented in `DECISIONS.md` ADR-005 through ADR-008).
 
 ## What works right now?
 
@@ -71,25 +71,40 @@ Copy-paste this to start the next session:
 Read CLAUDE.md, PROJECT_STATE.md, TASKS.md, and HANDOFF.md in full before doing
 anything else. Then:
 
-1. Run `git status` and `git log --oneline -10` and confirm the repository
-   matches what PROJECT_STATE.md describes. If it doesn't, treat the memory
-   files as stale and tell me what's actually different before proceeding.
+1. Run `git status`, `git log --oneline -10`, and `git fetch origin`
+   (read-only) and confirm the repository matches what PROJECT_STATE.md
+   describes (latest commit as of the 2026-08-07 checkpoint: `2163b0d`,
+   working tree clean). If it doesn't, treat the memory files as stale and
+   tell me what's actually different before proceeding — this doc set has
+   already gone stale once (docs described as "uncommitted" after they'd
+   actually been committed) and been caught and fixed, so don't assume it's
+   infallible.
 2. Run `cd apps/web && pnpm run typecheck && pnpm run lint && pnpm run build`
    and `cd apps/mobile && pnpm run typecheck` to confirm the documented
    "all four pass cleanly" baseline still holds.
-3. Give me a short summary (a few sentences) of your understanding of the
+3. Don't just repeat the "all 7 phases done, live in production" claim from
+   the docs — re-verify it yourself: check `vercel ls yume` / `vercel env ls`
+   (or equivalent) for a live Ready deployment and real env vars, and spot
+   -check the actual code/config rather than trusting the prior write-up.
+4. Give me a short summary (a few sentences) of your understanding of the
    project and its current state, in your own words, before touching any
    code — I want to catch it early if you've misunderstood something.
-4. Point out anything in the documentation that contradicts what you find in
-   the actual code, or that looks stale/wrong.
-5. Then continue work on TASKS.md's current/next-up items — do not redo
-   completed work, and do not re-architect existing patterns (the Server
-   Action serialization split, the three-Supabase-client convention, the
-   RLS-first authorization model, etc.) without a strong, stated reason.
-6. When you're done with meaningful work, update PROJECT_STATE.md, TASKS.md,
+5. Point out anything in the documentation that contradicts what you find in
+   the actual code, other doc files, or `git log` — this repo has real
+   precedent for doc drift (see PROJECT_STATE.md's "Last completed task" and
+   SESSION_LOG.md's 2026-08-07 entry for the most recent example) and fixing
+   it is expected, not optional.
+6. Then continue work on TASKS.md's current/next-up items — `SEC-001`
+   (subscription_entitlements RLS gap, still unfixed and not re-verified
+   live since 2026-08-06) is the recommended default. Do not redo completed
+   work, and do not re-architect existing patterns (the Server Action
+   serialization split, the three-Supabase-client convention, the RLS-first
+   authorization model, etc.) without a strong, stated reason.
+7. When you're done with meaningful work, update PROJECT_STATE.md, TASKS.md,
    append to SESSION_LOG.md, and update whichever other memory file your
    change affects — per the "Permanent rules for future development" section
    at the bottom of CLAUDE.md. This repository is the only persistent memory
    this project has between sessions; treat the memory files as seriously as
-   the code itself.
+   the code itself. If you commit anything, do not push unless explicitly
+   asked.
 ```

@@ -4,9 +4,9 @@ No prior CHANGELOG.md existed at repo root before this entry (there is a separat
 
 ---
 
-## [Unreleased] — Documentation handoff audit — 2026-08-06
+## [b0e446c] — Documentation handoff audit — 2026-08-06
 
-Full repository audit and permanent memory-system creation for AI-agent handoff continuity. **No product behavior was intentionally changed.**
+Full repository audit and permanent memory-system creation for AI-agent handoff continuity. **No product behavior was intentionally changed.** Committed 2026-08-06 as `b0e446c` (confirmed committed — not left pending — during the 2026-08-07 checkpoint; earlier drafts of this entry said "Unreleased," which went stale once the commit landed).
 
 **Files created:** `CLAUDE.md`, `PROJECT_STATE.md`, `ARCHITECTURE.md`, `FILE_MAP.md`, `FEATURES.md`, `TASKS.md`, `ROADMAP.md`, `DECISIONS.md`, `DATABASE.md`, `API_REFERENCE.md`, `UI_SYSTEM.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, `SESSION_LOG.md`, `HANDOFF.md`, this file.
 
@@ -18,6 +18,12 @@ Full repository audit and permanent memory-system creation for AI-agent handoff 
 - No automated tests, no CI exist anywhere in the project — confirmed via exhaustive search, not assumed.
 
 No product behavior was changed as part of this audit.
+
+---
+
+## [2163b0d] — Favicon update — 2026-08-07
+
+Replaced `apps/web/src/app/favicon.ico` with a multi-resolution icon matching the app's neon-night theme (magenta sparkle on a dark rounded square). Pure asset change, no code touched.
 
 ---
 

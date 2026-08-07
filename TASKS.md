@@ -6,25 +6,22 @@ Update this file after every meaningful session. IDs are stable — don't renumb
 
 ## Current task
 
-**DOCS-001 — Documentation/memory-system handoff audit (functionally complete, uncommitted)**
+**None in progress.** `DOCS-001` (below) is done. Pick up `SEC-001` next (see "Next up").
 
-- **Status:** Functionally complete. Not committed. Awaiting an explicit go/no-go from the project owner on committing.
-- **Exact objective:** Create a permanent, repository-based memory system (17 root-level markdown files) so that a brand-new Claude Code account — with zero access to this or any prior conversation — can resume development on Yume with minimal rediscovery, and perform a same-day "account-switch checkpoint" to re-verify and correct that system before the next handoff.
+### DOCS-001 — Documentation/memory-system handoff audit (done)
+
+- **Status:** Complete and committed (`b0e446c`, "docs: add full handoff documentation system"). Confirmed via `git log` this checkpoint (2026-08-07) — no open decision remains.
+- **Exact objective:** Create a permanent, repository-based memory system (17 root-level markdown files) so that a brand-new Claude Code account — with zero access to this or any prior conversation — can resume development on Yume with minimal rediscovery, and perform periodic "account-switch checkpoint" passes to re-verify and correct that system before each handoff.
 - **What has already been completed:**
   - All 17 files written: `CLAUDE.md`, `PROJECT_STATE.md`, `ARCHITECTURE.md`, `FILE_MAP.md`, `FEATURES.md`, `TASKS.md` (this file), `ROADMAP.md`, `DECISIONS.md`, `DATABASE.md`, `API_REFERENCE.md`, `UI_SYSTEM.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, `CHANGELOG.md`, `SESSION_LOG.md`, `HANDOFF.md`.
   - `README.md` rewritten (was stale — said "Phase 1: planning, no code written").
-  - Verification re-run and passed: `apps/web` typecheck/lint/build, `apps/mobile` typecheck — all clean.
+  - Verification re-run and passed multiple times since (most recently 2026-08-07): `apps/web` typecheck/lint/build, `apps/mobile` typecheck — all clean.
   - A cross-file accuracy/contradiction pass performed, which found and fixed a real self-inconsistency: the table count was documented as "29 tables" in `CLAUDE.md`, `ARCHITECTURE.md` (diagram label), and `SECURITY.md`, but cross-referencing every `create table` statement in `supabase/migrations/*.sql` shows **30** tables (`rate_limit_counters`, added in `0016_moderation_rls.sql`, was documented in `DATABASE.md`'s table reference but omitted from the summary count and ER-diagram note). All four now corrected to 30 total / 29 RLS-enabled / `subscription_entitlements` the one exception.
-  - A secret-value scan across all 17 files plus `README.md` — no API keys, tokens, or passwords found (confirmed via `grep` for known patterns from real credentials the project owner shared earlier in chat, e.g. `sb_secret_...`, `AIzaSy...`, `sbp_...`).
-  - No application code or database state was changed — this task is documentation-only.
-- **What remains:** Nothing code-side. The single remaining step is a decision, not work: **whether to `git add`/`git commit` (and optionally push) the 17 new/updated files.** This has been deliberately left undone in both the audit session and this checkpoint session because of a standing instruction not to commit/push/reset/deploy without being explicitly told to in that session.
-- **Relevant files:** all 17 files listed above, plus `README.md` (modified, unstaged).
-- **Known errors:** none. All four verification commands (`typecheck`×2, `lint`, `build`) passed cleanly on the most recent run.
-- **Blockers:** the commit decision above — this blocks nothing technical, but a new session should surface the question rather than assume either answer.
-- **Acceptance criteria:** either (a) the project owner confirms the files should be committed, they get committed with `git status` showing a clean tree afterward on `main`, and `PROJECT_STATE.md`/this file are updated to reflect the new commit hash; or (b) the owner says to leave them uncommitted for now, in which case this task can be marked done as-is and the note about pending-commit state should stay in `PROJECT_STATE.md` until resolved.
-- **Verification steps:** `git status` (confirm it matches the file list above, or reflects a clean tree if committed); `cd apps/web && pnpm run typecheck && pnpm run lint && pnpm run build`; `cd apps/mobile && pnpm run typecheck` — re-run once more after any commit, since a commit itself shouldn't change build output but is worth confirming.
-
-Once DOCS-001 is resolved either way, pick the next task from "High priority" below — **`SEC-001` is the recommended default** (see its own entry for why).
+  - A secret-value scan across all 17 files plus `README.md` and `docs/phase-1/*` — no API keys, tokens, or passwords found; only placeholder/pattern-name references (e.g. `sb_publishable_...` as a format description). Re-confirmed 2026-08-07.
+  - All 17 files committed to `main` at `b0e446c`; a 2026-08-07 checkpoint found and fixed a follow-on staleness bug where `PROJECT_STATE.md`, this file, and `CHANGELOG.md` still described the set as uncommitted after the commit had actually landed.
+- **What remains:** Nothing.
+- **Relevant files:** all 17 files listed above, plus `README.md`.
+- **Known errors:** none. All verification commands (`typecheck`×2, `lint`, `build`) passed cleanly on the most recent run (2026-08-07).
 
 ## Next up
 
