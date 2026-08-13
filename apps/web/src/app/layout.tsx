@@ -14,9 +14,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const title = "Yume — persistent rooms for your friends";
+const description =
+  "A persistent virtual room for small friend groups — voice and video calls, room decoration, drawing, synced YouTube and Spotify, and study mode.";
+
 export const metadata: Metadata = {
-  title: "Yume (placeholder name)",
-  description: "A persistent room for you and your friends.",
+  metadataBase: new URL("https://yume-gray.vercel.app"),
+  title: { default: title, template: "%s | Yume" },
+  description,
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "Yume",
+    title,
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

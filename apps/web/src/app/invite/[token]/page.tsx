@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseUrl } from "@/lib/supabase/env";
 import { JoinForm } from "./join-form";
+
+// Deliberately generic and constant, regardless of token validity — never
+// renders a room name (unmoderated user text) to an unauthenticated
+// unfurler. Inherits the site-level opengraph-image from the root layout
+// since no opengraph-image.tsx exists in this route segment.
+export const metadata: Metadata = {
+  title: { absolute: "You're invited — Yume" },
+  description: "Someone invited you to a room on Yume.",
+};
 
 type Preview =
   | { ok: true; roomName: string; requiresPassword: boolean }
