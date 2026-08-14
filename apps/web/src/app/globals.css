@@ -169,6 +169,21 @@
   }
 }
 
+/* Kills all decorative CSS animation/transitions (starfield, tw-animate-css
+ * utilities, shadcn/Radix-style component transitions) for users with OS-level
+ * prefers-reduced-motion. Nothing in this app's motion is gameplay-critical —
+ * everything here is either ambient decoration (starfield) or UI feedback
+ * (dialogs, toasts) that stays legible without animating. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* Shooting stars — see components/starfield.tsx, mounted once in the
  * root layout as a fixed full-viewport overlay behind all page content.
  * "Your Name" comet-across-the-sky vibe, kept as lightweight CSS
