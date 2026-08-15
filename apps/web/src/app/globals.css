@@ -305,7 +305,7 @@
   right: -0.12em;
   height: 50%;
   background: var(--neon-magenta);
-  animation: fx-blackout 0.9s steps(1) 1;
+  animation: fx-blackout 0.9s steps(1) 1 forwards;
 }
 .fx-blackout::before {
   top: 0;
