@@ -10,6 +10,7 @@ import {
 import { ConnectionState, Track } from "livekit-client";
 import { Mic, MicOff, Monitor, MonitorOff, PhoneOff, Sparkles, Video, VideoOff } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
+import { ThinkingOrb } from "thinking-orbs";
 import { updateOwnStatusAction, updateRoomAudioModeAction } from "@/app/room/[roomId]/actions";
 import { CameraEffectsPanel } from "@/components/camera-effects/camera-effects-panel";
 import { Button } from "@/components/ui/button";
@@ -152,7 +153,10 @@ export function CallControls({
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border bg-card px-4 py-3">
       {joined ? (
         connecting ? (
-          <span className="text-sm text-muted-foreground">Connecting…</span>
+          <span className="flex items-center gap-2 text-sm text-muted-foreground">
+            <ThinkingOrb state="connecting" size={20} aria-label="Connecting to call" />
+            Connecting…
+          </span>
         ) : (
           <InCallControls />
         )
