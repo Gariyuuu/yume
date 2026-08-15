@@ -283,3 +283,52 @@
     0 0 16px color-mix(in srgb, var(--neon-magenta) 75%, transparent),
     0 0 36px color-mix(in srgb, var(--neon-magenta) 40%, transparent);
 }
+
+/* Draw & Guess word reveal (P06, portfolio polish pass). Adapted from
+ * text-effects.colorion.co's "38 Blackout" (MIT, github.com/ckissi/
+ * colorion-text-effects) — redaction bars retract once, revealing the real
+ * word underneath (which is always painted at full opacity; only the bars
+ * on top toggle). animation-iteration-count is 1 (not the demo's infinite
+ * loop) so it plays once and settles revealed. Governed by the blanket
+ * prefers-reduced-motion rule above: under reduced motion the bars land on
+ * their retracted (scaleX(0)) end state instantly — word revealed straight
+ * away, never a frame where it's hidden. */
+.fx-blackout {
+  position: relative;
+  padding: 0.05em 0.15em;
+}
+.fx-blackout::before,
+.fx-blackout::after {
+  content: "";
+  position: absolute;
+  left: -0.12em;
+  right: -0.12em;
+  height: 50%;
+  background: var(--neon-magenta);
+  animation: fx-blackout 0.9s steps(1) 1;
+}
+.fx-blackout::before {
+  top: 0;
+  transform-origin: left;
+}
+.fx-blackout::after {
+  bottom: 0;
+  transform-origin: right;
+  animation-delay: 0.12s;
+}
+@keyframes fx-blackout {
+  0%, 15% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+
+/* Chat reaction "Like Burst" (P07, independently implemented — kinetics.
+ * colorion.co ships license: null, technique only, no source copied here).
+ * A short scale-pop on the reaction pill itself when toggled on. */
+.reaction-burst {
+  animation: reaction-burst 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) 1;
+}
+@keyframes reaction-burst {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
