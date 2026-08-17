@@ -1,7 +1,7 @@
 "use client";
 
 import { Flag, Reply, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ReportDialog } from "@/components/moderation/report-dialog";
 import { cn } from "@/lib/utils";
@@ -30,6 +30,8 @@ export function MessageItem({
   onToggleReaction: (emoji: string) => void;
 }) {
   const [reportOpen, setReportOpen] = useState(false);
+  const [burstEmoji, setBurstEmoji] = useState<string | null>(null);
+  const burstTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reactionCounts = message.message_reactions.reduce<Record<string, number>>((acc, r) => {
     acc[r.emoji] = (acc[r.emoji] ?? 0) + 1;
     return acc;
@@ -37,6 +39,18 @@ export function MessageItem({
   const myReactions = new Set(
     message.message_reactions.filter((r) => r.profile_id === currentProfileId).map((r) => r.emoji)
   );
+
+  // Kinetics-inspired "Like Burst" pop (independently implemented — kinetics.
+  // colorion.co ships license: null, technique only, no source copied).
+  function handleReact(emoji: string) {
+    const wasActive = myReactions.has(emoji);
+    onToggleReaction(emoji);
+    if (!wasActive) {
+      if (burstTimeoutRef.current) clearTimeout(burstTimeoutRef.current);
+      setBurstEmoji(emoji);
+      burstTimeoutRef.current = setTimeout(() => setBurstEmoji(null), 350);
+    }
+  }
 
   if (message.deleted_at) {
     return <p className="px-3 py-1 text-xs italic text-muted-foreground">Message deleted</p>;
@@ -92,10 +106,11 @@ export function MessageItem({
               <button
                 key={emoji}
                 type="button"
-                onClick={() => onToggleReaction(emoji)}
+                onClick={() => handleReact(emoji)}
                 className={cn(
                   "rounded-full border px-1.5 py-0.5 text-xs",
-                  myReactions.has(emoji) ? "border-brand-500 bg-brand-50" : "border-transparent bg-muted"
+                  myReactions.has(emoji) ? "border-brand-500 bg-brand-50" : "border-transparent bg-muted",
+                  burstEmoji === emoji && "reaction-burst"
                 )}
               >
                 {emoji} {count}
@@ -108,7 +123,7 @@ export function MessageItem({
                   key={emoji}
                   type="button"
                   className="rounded px-1 text-xs hover:bg-muted"
-                  onClick={() => onToggleReaction(emoji)}
+                  onClick={() => handleReact(emoji)}
                 >
                   {emoji}
                 </button>

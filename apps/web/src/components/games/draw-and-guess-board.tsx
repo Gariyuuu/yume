@@ -41,7 +41,9 @@ export function DrawAndGuessBoard({
         <div className="flex flex-col gap-1">
           {state.phase === "reveal" ? (
             <p className="text-sm">
-              The word was <strong>{state.revealedWord}</strong>.
+              The word was{" "}
+              <strong className="fx-blackout">{state.revealedWord}</strong>
+              .
             </p>
           ) : null}
           {nextDrawerId === currentProfileId ? (
