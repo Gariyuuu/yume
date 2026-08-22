@@ -61,7 +61,7 @@ export async function createInviteAction(
 
   revalidatePath(`/room/${parsed.data.room_id}`);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yume-gray.vercel.app";
   return { inviteUrl: `${siteUrl}/invite/${token}` };
 }
 
