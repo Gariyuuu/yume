@@ -98,7 +98,7 @@ export async function sendMagicLinkAction(
   const { error } = await supabase.auth.signInWithOtp({
     email: parsed.data.email,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/auth/callback`
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://yume-gray.vercel.app"}/auth/callback`
     }
   });
 
@@ -123,7 +123,7 @@ export async function requestPasswordResetAction(
 
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/auth/callback?next=/update-password`
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://yume-gray.vercel.app"}/auth/callback?next=/update-password`
   });
 
   if (error) {

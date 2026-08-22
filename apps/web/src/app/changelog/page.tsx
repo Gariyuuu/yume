@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const metadata = { title: "Changelog — Yume" };
+export const metadata = { title: "Changelog" };
 
 const ENTRIES = [
   {
